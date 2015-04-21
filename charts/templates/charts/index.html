@@ -1,0 +1,43 @@
+{% extends "charts/base-layout.html" %}
+
+{% block title %}Yocto QA Tests{% endblock %}
+
+{% block body %}
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Main Page</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+
+{% endblock body %}
+<!--
+			<ul>
+				{% for testrun in testruns%}
+					<li>
+						<h3>
+							Test run made {{testrun.date}} on {{testrun.target}}, on commit {{testrun.commit}} has these results:
+						</h3>
+						<ul>
+						{% for testresult in testrun.testresult_set.all %}
+							<li>
+								Test result {{testresult.test_case_id}} {{testresult.result}}ed
+								{% if testresult.message%}
+									<br />
+									{{testresult.message}}
+									<br />
+								{% endif%}
+							</li>
+						{% endfor %}
+						</ul>
+					</li>
+				{% endfor %}
+			</ul>
+-->
