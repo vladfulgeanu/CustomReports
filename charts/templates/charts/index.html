@@ -12,32 +12,16 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>TODO</h3>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
 
         </div>
         <!-- /#page-wrapper -->
 
 
 {% endblock body %}
-<!--
-			<ul>
-				{% for testrun in testruns%}
-					<li>
-						<h3>
-							Test run made {{testrun.date}} on {{testrun.target}}, on commit {{testrun.commit}} has these results:
-						</h3>
-						<ul>
-						{% for testresult in testrun.testresult_set.all %}
-							<li>
-								Test result {{testresult.test_case_id}} {{testresult.result}}ed
-								{% if testresult.message%}
-									<br />
-									{{testresult.message}}
-									<br />
-								{% endif%}
-							</li>
-						{% endfor %}
-						</ul>
-					</li>
-				{% endfor %}
-			</ul>
--->

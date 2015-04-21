@@ -1,5 +1,4 @@
-from django.shortcuts import get_object_or_404, get_list_or_404, render
-from django.http import HttpResponse
+from django.shortcuts import get_list_or_404, render
 
 from .models import TestRun, TestResult
 
@@ -14,16 +13,16 @@ def index(request):
 def dashboard(request):
 
 	testrun_list = get_list_or_404(TestRun)
-	mydict = {}
+	results = []
 
 	for testrun in testrun_list:
 		passed = testrun.testresult_set.filter(result="pass").count()
-		mydict[testrun.id] = {
+		results.append({
 			'date'   : testrun.date,
 		 	'passed' : passed,
 			'failed' : testrun.testresult_set.count() - passed
-		}
+		})
 
 	return render(request, 'charts/dashboard.html', {
-			'dict' : mydict
+			'results' : results
 		})

@@ -50,13 +50,13 @@
                             <a href="dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Menu<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Flot Charts</a>
+                                    <a href="#">Submenu 1</a>
                                 </li>
                                 <li>
-                                    <a href="#">Morris.js Charts</a>
+                                    <a href="#">Submenu 2</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -75,7 +75,6 @@
     </div>
     <!-- /#wrapper -->
 
-
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/metisMenu.min.js"></script>
@@ -84,26 +83,3 @@
 
 </body>
 </html>
-<!--
-			<ul>
-				{% for testrun in testruns%}
-					<li>
-						<h3>
-							Test run made {{testrun.date}} on {{testrun.target}}, on commit {{testrun.commit}} has these results:
-						</h3>
-						<ul>
-						{% for testresult in testrun.testresult_set.all %}
-							<li>
-								Test result {{testresult.test_case_id}} {{testresult.result}}ed
-								{% if testresult.message%}
-									<br />
-									{{testresult.message}}
-									<br />
-								{% endif%}
-							</li>
-						{% endfor %}
-						</ul>
-					</li>
-				{% endfor %}
-			</ul>
--->

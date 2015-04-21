@@ -16,22 +16,32 @@
         mydata.addColumn('number', 'Passed');
         mydata.addColumn('number', 'Failed');
 
-        {% for id, info in dict.items %}
+        {% for info in results %}
             mydata.addRow(
               ['{{ info.date }}', {{ info.passed }}, {{ info.failed }}]
             );
         {% endfor %}
 
         var options = {
+          isStacked: true,
           chart: {
             title: 'Test Chart',
             subtitle: 'first demo column bar chart',
-          }
+          },
+          animation: {
+            duration: 10000,
+            easing: 'in',
+            startup: true
+          },
         };
 
         var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
 
-        chart.draw(mydata, options);
+        chart.draw(mydata, google.charts.Bar.convertOptions(options));
+
+        $(window).resize(function(){
+          chart.draw(mydata, google.charts.Bar.convertOptions(options));
+        });
       }
     </script>
 
@@ -49,7 +59,7 @@
                 <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <div id="columnchart_material" style="width: 400px; height: 500px;"></div>
+                            <div id="columnchart_material" style="width: 1000px; height: 500px;"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>

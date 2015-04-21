@@ -7,8 +7,11 @@ class TestRun(models.Model):
 	date = models.DateField()
 	image_type = models.CharField(max_length=100)
 
+	class Meta:
+		ordering = ['date']
+
 	def __str__(self):
-		return "commit: " + self.commit + ", on: " + self.target
+		return "commit: " + self.commit + ", on: " + self.target + ", date: " + self.date
 
 class TestResult(models.Model):
 	RESULT_CHOICES = (
@@ -19,7 +22,7 @@ class TestResult(models.Model):
 	testrun = models.ForeignKey(TestRun)
 	test_case_id = models.CharField(max_length=200)
 	result = models.CharField(max_length=4, choices=RESULT_CHOICES)
-	message = models.CharField(max_length=15000, blank=True)
+	message = models.CharField(max_length=30000, blank=True)
 
 	def __str__(self):
 		return self.test_case_id + " result is: " + self.result
