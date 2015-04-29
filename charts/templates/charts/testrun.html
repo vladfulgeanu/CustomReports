@@ -12,24 +12,64 @@
                 <!-- /.col-lg-12 -->
             </div>
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-md-4 col-md-push-8">
                     <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">Details</h2>
+                        </div>
+                        <div class="panel-body list-group">
+                            <span class="list-group-item container-fluid row">
+                                <div class="col-sm-6">
+                                    <span class="list-group-item-success">
+                                      <h4 class="list-group-item-heading">Passed</h4>
+                                      <p class="list-group-item-text">{{ passed }}</p>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span class="list-group-item-danger">
+                                      <h4 class="list-group-item-heading">Failed</h4>
+                                      <p class="list-group-item-text">{{ failed }}</p>
+                                    </span>
+                                </div>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Date</h4>
+                                <p class="list-group-item-text">{{ date }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Commit</h4>
+                                <p class="list-group-item-text">{{ commit }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Target</h4>
+                                <p class="list-group-item-text">{{ target }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Image type</h4>
+                                <p class="list-group-item-text">{{ itype }}</p>
+                            </span>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-4 -->
+                <div class="col-md-8 col-md-pull-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">All Test Results</h1>
+                        </div>
                         <div class="panel-body">
-                            <h2>Date: </h2> {{ date }}
-                            <h2>Commit: </h2> {{ commit }}
-                            <h2>Target: </h2> {{ target }}
-                            <h2>Image type: </h2> {{ itype }}
-                            <br /><br />
-                            <h2> All Test Results:</h2>
-                            <br /><br />
                             <ul>
                                 {% for testresult in testresults %}
                                     <li>
-                                        Test result <b>{{ testresult.test_case_id }}</b> {{ testresult.result }}ed
-                                        {% if testresult.message %}
+                                        Test result <strong>{{ testresult.test_case_id }}</strong> 
+                                        {% if testresult.message%}
+                                            <span class="text-danger">{{ testresult.result }}ed</span>:
                                             <br />
-                                            {{ testresult.message }}
-                                            <br />
+                                            <pre>{{ testresult.message }}</pre>
+                                        {% else %}
+                                            <span class="text-success">{{ testresult.result }}ed</span>
                                         {% endif %}
                                     </li>
                                 {% endfor %}

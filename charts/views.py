@@ -36,11 +36,14 @@ def testrun(request, id):
 
 	testrun = get_object_or_404(TestRun, pk = id)
 	testresults = testrun.testresult_set.all
+	passed = testrun.testresult_set.filter(result="pass").count()
 
 	return render(request, 'charts/testrun.html', {
 			'date'        : testrun.date,
 			'commit'      : testrun.commit,
 			'target'      : testrun.target,
 			'itype'       : testrun.image_type,
+			'passed'      : passed,
+			'failed'      : testrun.testresult_set.count() - passed,
 			'testresults' : testresults
 		})
