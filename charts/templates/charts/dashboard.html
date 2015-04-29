@@ -35,7 +35,6 @@
 
 
         var options = {
-          width: 1000,
           height: 500,
           chartArea: {width: '90%', height: '80%'},
           focusTarget: 'category',
@@ -60,8 +59,13 @@
           }
         }
         google.visualization.events.addListener(chart, 'select', selectHandler);
+
         chart.draw(mydata, options);
       }
+
+      $(window).resize(function() {
+          drawChart();
+        });
     </script>
 
 {% endblock scripts %}
