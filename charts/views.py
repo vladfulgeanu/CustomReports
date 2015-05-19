@@ -8,6 +8,7 @@ def index(request):
 
 	testreports = []
 
+	# TODO check for null
 	lastest_testreports = get_list_or_404(TestReport)[-5:]
 	
 	for testreport in lastest_testreports:
@@ -16,11 +17,8 @@ def index(request):
 		for key, value in filters_json.iteritems():
 			filters_dict[key] = value
 
-		print filters_dict
 		testreports.append(TestRun.objects.filter(**filters_dict))
 
-	print testreports[0]
-	print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	return render(request, 'charts/index.html', {
 			'latest' : testreports[0],
 			'other'  : testreports[1:]
@@ -60,15 +58,15 @@ def dashboard(request):
 def testrun(request, id):
 
 	testrun = get_object_or_404(TestRun, pk = id)
-	testresults = testrun.testresult_set.all
-	passed = testrun.testresult_set.filter(result="pass").count()
+	testcaseresults = testrun.testcaseresult_set.all
+	passed = testrun.testcaseresult_set.filter(result="pass").count()
 
 	return render(request, 'charts/testrun.html', {
 			'date'        : testrun.date,
-			'commit'      : testrun.commit, 	
+			'commit'      : testrun.poky_commit,
 			'target'      : testrun.target,
 			'itype'       : testrun.image_type,
 			'passed'      : passed,
-			'failed'      : testrun.testresult_set.count() - passed,
-			'testresults' : testresults
+			'failed'      : testrun.testcaseresult_set.count() - passed,
+			'testresults' : testcaseresults
 		})

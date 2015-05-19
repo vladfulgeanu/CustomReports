@@ -26,7 +26,6 @@ else:
 	sys.exit(1)
 
 
-"""
 testplan = {
 	'name' : 'BSP/QEMU: master branch',
 	'product' : 'BSPs',
@@ -308,7 +307,7 @@ else:
 	print 'Error: TestCaseRes6 json is not valid'
 	sys.exit(1)
 
-
+"""
 #############################################
 testrun = {}
 testrun["target"] = testrun_raw["attributes"]["target"]
