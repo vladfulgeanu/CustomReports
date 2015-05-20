@@ -68,5 +68,13 @@ def testrun(request, id):
 			'itype'       : testrun.image_type,
 			'passed'      : passed,
 			'failed'      : testrun.testcaseresult_set.count() - passed,
-			'testresults' : testcaseresults
+			'testcaseresults' : testcaseresults
+		})
+
+def testcase (request, id):
+
+	testcase = get_object_or_404(TestCase, pk = id)
+
+	return render (request, 'charts/testcase.html', {
+			'testcase'    : testcase
 		})

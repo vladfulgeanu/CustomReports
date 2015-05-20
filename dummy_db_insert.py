@@ -11,7 +11,7 @@ django.setup()
 
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "customreports.settings")
 from charts.models import TestPlanForm, TestRunForm, TestCaseForm, TestCaseResultForm, TestReportForm
-
+"""
 testreport = {
 	'filters' : '{"testplan__name" : "BSP/QEMU: master branch"}',
 }
@@ -307,7 +307,6 @@ else:
 	print 'Error: TestCaseRes6 json is not valid'
 	sys.exit(1)
 
-"""
 #############################################
 testrun = {}
 testrun["target"] = testrun_raw["attributes"]["target"]

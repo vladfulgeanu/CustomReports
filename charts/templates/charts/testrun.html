@@ -53,23 +53,29 @@
                     </div>
                     <!-- /.panel -->
                 </div>
-                <!-- /.col-lg-4 -->
+                <!-- /.col-md-4 -->
                 <div class="col-md-8 col-md-pull-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h1 class="panel-title">All Test Results</h1>
+                            <h1 class="panel-title">All Test Case Results</h1>
                         </div>
                         <div class="panel-body">
                             <ul>
-                                {% for testresult in testresults %}
+                                {% for testcaseresult in testcaseresults %}
                                     <li>
-                                        Test result <strong>{{ testresult.test_case_id }}</strong> 
-                                        {% if testresult.message%}
-                                            <span class="text-danger">{{ testresult.result }}ed</span>:
+                                        Test case
+                                        <strong>
+                                            {% url 'charts:base_testcase' as base %}
+                                            {% with base|add:testcaseresult.testcase.testcase_id as link %}
+                                            <a href="{{ link }}">{{ testcaseresult.testcase.testcase_id }}</a>
+                                            {% endwith %}
+                                        </strong> 
+                                        {% if testcaseresult.message%}
+                                            <span class="text-danger">{{ testcaseresult.result }}ed</span>:
                                             <br />
-                                            <pre>{{ testresult.message }}</pre>
+                                            <pre>{{ testcaseresult.message }}</pre>
                                         {% else %}
-                                            <span class="text-success">{{ testresult.result }}ed</span>
+                                            <span class="text-success">{{ testcaseresult.result }}ed</span>
                                         {% endif %}
                                     </li>
                                 {% endfor %}
@@ -80,7 +86,7 @@
                     <!-- /.panel -->
                     
                 </div>
-                <!-- /.col-lg-8 -->
+                <!-- /.col-md-8 -->
             </div>
             <!-- /.row -->
         </div>

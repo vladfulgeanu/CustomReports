@@ -13,7 +13,16 @@
             </div>
             <!-- /.row -->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-4 col-md-push-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">Latest Test Report Pie Chart</h2>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-md-4 -->
+                <div class="col-md-8 col-md-pull-4">
                     <h3>Latest Test Report</h3>
                     {% for testrun in latest %}
                         <ul>
@@ -36,7 +45,7 @@
                         {% endfor %}
                     {% endfor %}
                 </div>
-                <!-- /.col-lg-12 -->
+                <!-- /.col-md-8 -->
             </div>
             <!-- /.row -->
 
