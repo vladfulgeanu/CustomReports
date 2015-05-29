@@ -2,6 +2,39 @@
 
 {% block title %}Yocto QA Tests{% endblock %}
 
+{% block scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var mydata = new google.visualization.DataTable();
+
+        mydata.addColumn('string', 'Category');
+        mydata.addColumn('number', 'Total tests');
+
+        mydata.addRow(['Passed', {{ latest_passes }}]);
+        mydata.addRow(['Failed', {{ latest_fails }}]);
+
+        var options = {
+            title: 'Total tests cases\' results',
+            height: 300,
+            legend: 'none',
+            pieHole: 0.3,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('latest_donutchart'));
+        chart.draw(mydata, options);
+      }
+
+      $(window).resize(function() {
+          drawChart();
+        });
+    </script>
+
+{% endblock scripts %}
+
 {% block body %}
 
         <div id="page-wrapper">
@@ -17,6 +50,9 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h2 class="panel-title">Latest Test Report Pie Chart</h2>
+                        </div>
+                        <div class="panel-body">
+                          <div id="latest_donutchart" ></div>
                         </div>
                     </div>
                     <!-- /.panel -->

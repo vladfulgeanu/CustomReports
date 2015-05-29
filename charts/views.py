@@ -19,7 +19,15 @@ def index(request):
 
 		testreports.append(TestRun.objects.filter(**filters_dict))
 
+	passed = failed = 0
+	for testrun in testreports[0]:
+		no_testcaseresults = testrun.testcaseresult_set.count()
+		passed +=  no_testcaseresults - testrun.testcaseresult_set.filter(result="fail").count()
+		failed +=  no_testcaseresults - testrun.testcaseresult_set.filter(result="pass").count()
+
 	return render(request, 'charts/index.html', {
+			'latest_fails' : failed,
+			'latest_passes': passed,
 			'latest' : testreports[0],
 			'other'  : testreports[1:]
 		})

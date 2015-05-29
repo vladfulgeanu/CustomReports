@@ -11,9 +11,9 @@ django.setup()
 
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "customreports.settings")
 from charts.models import TestPlanForm, TestRunForm, TestCaseForm, TestCaseResultForm, TestReportForm
-"""
+
 testreport = {
-	'filters' : '{"testplan__name" : "BSP/QEMU: master branch"}',
+	'filters' : '{"release" : "1.7.2_rc3"}',
 }
 
 testreport_form = TestReportForm(data=testreport)
@@ -25,13 +25,13 @@ else:
 	print 'Error: TestReport json is not valid'
 	sys.exit(1)
 
-
+"""
 testplan = {
-	'name' : 'BSP/QEMU: master branch',
-	'product' : 'BSPs',
+	'name' : 'Toaster: dizzy branch',
+	'product' : 'Toaster',
 	'product_version' : '1.8',
-	'created' : '2012-11-28 10:03:34',
-	'author' : "Alexandru Georgescu <corneliux.stoicescu@intel.com>",
+	'created' : '2015-01-07 09:16:42',
+	'author' : "Andreea Brandusa Proca <andreea.b.proca@intel.com>",
 	'version' : '1',
 	'plan_type' : 'Function',
 }
@@ -69,12 +69,12 @@ else:
 ##############################
 
 testrun = {
-	"testrun_id" : "1247",
+	"testrun_id" : "1245",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Weekly",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
 	"poky_branch" : "dizzy",
-	"date" : "2015-05-05 11:39:23",
+	"date" : "2015-05-05 11:23:23",
 	"target" : "genericx86",
 	"image_type" : "core-image-sato",
 	"hw_arch" : "x86_64",
@@ -82,7 +82,7 @@ testrun = {
 }
 
 testrun2 = {
-	"testrun_id" : "1356",
+	"testrun_id" : "3245",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Weekly",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -95,7 +95,7 @@ testrun2 = {
 }
 
 testrun3 = {
-	"testrun_id" : "1436",
+	"testrun_id" : "2123",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Full Pass",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -147,8 +147,8 @@ else:
 ##############################
 
 testcase1 = {
-	"testcase_id" : "234",
-	"summary" : "do this then do that",
+	"testcase_id" : "215",
+	"summary" : "do important thinggy",
 	"author" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
 	"tester" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
 	"category" : "Weekly",
@@ -156,7 +156,7 @@ testcase1 = {
 }
 
 testcase2 = {
-	"testcase_id" : "457",
+	"testcase_id" : "285",
 	"summary" : "do other thinggy then do that",
 	"author" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
 	"tester" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
@@ -168,7 +168,7 @@ testcase_form1 = TestCaseForm(data=testcase1)
 
 if testcase_form1.is_valid():
 	testcase_obj1 = testcase_form1.save(commit=False)
-	testcase_obj1.testplan = testplan_obj
+	testcase_obj1.testplan = '1'
 	testcase_obj1.save()
 	print "TC1 saved"
 
@@ -185,14 +185,14 @@ if testcase_form2.is_valid():
 	print "TC2 saved"
 
 else:
-	print 'Error: TestCase1 json is not valid'
+	print 'Error: TestCase2 json is not valid'
 	sys.exit(1)
 
 ##############################
 testcaseresult1 = {
-	"result" : "pass",
-	"started_on" : "2015-05-05 11:39:23",
-	"finished_on" : "2015-05-05 11:54:23"
+	"result" : "fail",
+	"started_on" : "2015-05-17 11:39:23",
+	"finished_on" : "2015-05-17 11:54:23"
 }
 
 testcaseresult2 = {
@@ -230,9 +230,9 @@ else:
 
 
 testcaseresult3 = {
-	"result" : "pass",
-	"started_on" : "2015-05-15 11:39:23",
-	"finished_on" : "2015-05-15 11:54:23"
+	"result" : "fail",
+	"started_on" : "2015-05-18 11:39:23",
+	"finished_on" : "2015-05-18 11:54:23"
 }
 
 testcaseresult4 = {
@@ -270,8 +270,8 @@ else:
 
 testcaseresult5 = {
 	"result" : "pass",
-	"started_on" : "2015-05-25 11:39:23",
-	"finished_on" : "2015-05-25 11:54:23"
+	"started_on" : "2015-05-21 11:39:23",
+	"finished_on" : "2015-05-21 11:54:23"
 }
 
 testcaseresult6 = {
