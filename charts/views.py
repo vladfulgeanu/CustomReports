@@ -1,6 +1,6 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.db.models import Q
-import json
+import json, collections
 
 from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
 
@@ -10,23 +10,23 @@ def index(request):
 
 	testruns = {}
 
-	raw_releases = TestRun.objects.filter(release__startswith=version).distinct('release')
+	uniq_release_testruns = TestRun.objects.filter(release__startswith=version).distinct('release')
 
-	for raw_release in raw_releases:
+	for uniq_release_testrun in uniq_release_testruns:
 		passed = failed = 0
-		testruns_in_release = TestRun.objects.filter(release=raw_release.release)
+		testruns_in_release = TestRun.objects.filter(release=uniq_release_testrun.release)
 		for testrun_in_release in testruns_in_release:
 			passed += testrun_in_release.testcaseresult_set.filter(result='pass').count()
 			failed += testrun_in_release.testcaseresult_set.filter(result='fail').count()
 
-		testruns[raw_release.release] = {
-			'release' : raw_release.release[-3:],
+		testruns[uniq_release_testrun.release.encode('ascii', 'ignore')] = {
+			'release' : uniq_release_testrun.release[-3:],
 			'passed' : passed,
 			'failed' : failed
 		}
 
 	return render(request, 'charts/index.html', {
-			'testruns' : testruns
+			'testruns' : collections.OrderedDict(sorted(testruns.items()))
 		})
 	
 

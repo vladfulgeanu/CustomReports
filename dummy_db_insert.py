@@ -221,6 +221,83 @@ else:
 	print 'Error: TestRun6 json is not valid'
 	sys.exit(1)
 
+	##############################
+
+testrun7 = {
+	"testrun_id" : "2895",
+	"release" : "1.7.2_rc2",
+	"test_type"  : "Weekly",
+	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-04-26 11:23:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "sugarbay"
+}
+
+testrun8 = {
+	"testrun_id" : "4391",
+	"release" : "1.7.2_rc2",
+	"test_type"  : "Weekly",
+	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-04-26 11:39:23",
+	"target" : "NUC",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "NUC"
+}
+
+testrun9 = {
+	"testrun_id" : "3528",
+	"release" : "1.7.2_rc2",
+	"test_type"  : "Full Pass",
+	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-04-26 11:39:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "Atom-PC"
+}
+
+testrun_form7 = TestRunForm(data=testrun7)
+
+if testrun_form7.is_valid():
+	testrun_obj7 = testrun_form7.save(commit=False)
+	testrun_obj7.testplan = testplan_obj
+	testrun_obj7.save()
+	print "TR7 saved"
+
+else:
+	print 'Error: TestRun7 json is not valid'
+	sys.exit(1)
+
+testrun_form8 = TestRunForm(data=testrun8)
+
+if testrun_form8.is_valid():
+	testrun_obj8 = testrun_form8.save(commit=False)
+	testrun_obj8.testplan = testplan_obj
+	testrun_obj8.save()
+	print "TR8 saved"
+
+else:
+	print 'Error: TestRun8 json is not valid'
+	sys.exit(1)
+
+testrun_form9 = TestRunForm(data=testrun9)
+
+if testrun_form9.is_valid():
+	testrun_obj9 = testrun_form9.save(commit=False)
+	testrun_obj9.testplan = testplan_obj
+	testrun_obj9.save()
+	print "TR9 saved"
+
+else:
+	print 'Error: TestRun9 json is not valid'
+	sys.exit(1)
+
 ##############################
 
 testcase1 = {
@@ -502,6 +579,126 @@ if testcaseres_form12.is_valid():
 
 else:
 	print 'Error: TestCaseRes12 json is not valid'
+	sys.exit(1)
+
+
+##############################
+testcaseresult13 = {
+	"result" : "pass",
+	"started_on" : "2015-04-26 11:39:23",
+	"finished_on" : "2015-04-26 11:54:23"
+}
+
+testcaseresult14 = {
+	"result" : "pass",
+	"started_on" : "2015-04-26 11:23:23",
+	"finished_on" : "2015-04-26 11:24:23"
+}
+
+
+testcaseres_form13 = TestCaseResultForm(data=testcaseresult13)
+
+if testcaseres_form13.is_valid():
+	testcaseres_obj13 = testcaseres_form13.save(commit=False)
+	testcaseres_obj13.testcase = testcase_obj1
+	testcaseres_obj13.testrun = testrun_obj7
+	testcaseres_obj13.save()
+	print 'TCR13 saved'
+
+else:
+	print 'Error: TestCaseRes13 json is not valid'
+	sys.exit(1)
+
+testcaseres_form14 = TestCaseResultForm(data=testcaseresult14)
+
+if testcaseres_form14.is_valid():
+	testcaseres_obj14 = testcaseres_form14.save(commit=False)
+	testcaseres_obj14.testcase = testcase_obj2
+	testcaseres_obj14.testrun = testrun_obj7
+	testcaseres_obj14.save()
+	print 'TCR14 saved'
+
+else:
+	print 'Error: TestCaseRes14 json is not valid'
+	sys.exit(1)
+
+
+testcaseresult15 = {
+	"result" : "fail",
+	"started_on" : "2015-04-26 11:39:23",
+	"finished_on" : "2015-04-26 11:54:23"
+}
+
+testcaseresult16 = {
+	"result" : "pass",
+	"started_on" : "2015-04-26 11:23:23",
+	"finished_on" : "2015-04-26 11:24:23"
+}
+
+
+testcaseres_form15 = TestCaseResultForm(data=testcaseresult15)
+
+if testcaseres_form15.is_valid():
+	testcaseres_obj9 = testcaseres_form15.save(commit=False)
+	testcaseres_obj9.testcase = testcase_obj1
+	testcaseres_obj9.testrun = testrun_obj8
+	testcaseres_obj9.save()
+	print 'TCR15 saved'
+
+else:
+	print 'Error: TestCaseRes15 json is not valid'
+	sys.exit(1)
+
+testcaseres_form16 = TestCaseResultForm(data=testcaseresult16)
+
+if testcaseres_form16.is_valid():
+	testcaseres_obj16 = testcaseres_form16.save(commit=False)
+	testcaseres_obj16.testcase = testcase_obj2
+	testcaseres_obj16.testrun = testrun_obj8
+	testcaseres_obj16.save()
+	print 'TCR16 saved'
+
+else:
+	print 'Error: TestCaseRes16 json is not valid'
+	sys.exit(1)
+
+testcaseresult17 = {
+	"result" : "pass",
+	"started_on" : "2015-04-26 11:39:23",
+	"finished_on" : "2015-04-26 11:54:23"
+}
+
+testcaseresult18 = {
+	"result" : "pass",
+	"started_on" : "2015-04-26 11:23:23",
+	"finished_on" : "2015-04-26 11:24:23"
+}
+
+
+testcaseres_form17 = TestCaseResultForm(data=testcaseresult17)
+
+if testcaseres_form17.is_valid():
+	testcaseres_obj17 = testcaseres_form17.save(commit=False)
+	testcaseres_obj17.testcase = testcase_obj1
+	testcaseres_obj17.testrun = testrun_obj9
+	testcaseres_obj17.save()
+	print 'TCR17 saved'
+
+else:
+	print 'Error: TestCaseRes17 json is not valid'
+	sys.exit(1)
+
+testcaseres_form18 = TestCaseResultForm(data=testcaseresult18)
+
+if testcaseres_form18.is_valid():
+	testcaseres_obj18 = testcaseres_form18.save(commit=False)
+	testcaseres_obj18.testcase = testcase_obj2
+	testcaseres_obj18.testrun = testrun_obj9
+	testcaseres_obj18.save()
+	print 'TCR18 saved'
+
+else:
+	print 'Error: TestCaseRes18 json is not valid'
 	sys.exit(1)
 
 #############################################

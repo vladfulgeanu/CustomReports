@@ -70,7 +70,7 @@
                                             <a href="{{ link }}">{{ testcaseresult.testcase.testcase_id }}</a>
                                             {% endwith %}
                                         </strong> 
-                                        {% if testcaseresult.message%}
+                                        {% if testcaseresult.result == 'fail' %}
                                             <span class="text-danger">{{ testcaseresult.result }}ed</span>:
                                             <br />
                                             <pre>{{ testcaseresult.message }}</pre>

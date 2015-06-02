@@ -3,28 +3,90 @@
 {% block title %}Yocto QA Tests{% endblock %}
 
 {% block scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["bar"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
 
+        var mydata = new google.visualization.DataTable();
+
+        mydata.addColumn('string', 'Release');
+        mydata.addColumn('number', 'Passed');
+        mydata.addColumn('number', 'Failed');
+
+        var ids = {};
+        {% for release, obj in testruns.items %}
+            mydata.addRow(
+              ['{{ release }}',
+               {{ obj.passed }},
+               {{ obj.failed }}
+               ]);
+            ids[{{ forloop.counter0 }}] = '{{ release }}';
+        {% endfor %}
+
+
+        var options = {
+          height: 500,
+          chartArea: {width: '90%', height: '80%'},
+          focusTarget: 'category',
+
+          legend: 'none',
+
+          colors: ['#6dc066', '#bd0909'],
+
+          isStacked: true,
+          chart: {
+            title: 'Tests run for version 1.7',
+          },
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('columnchart'));
+
+        function selectHandler() {
+          var selectedItem = chart.getSelection()[0];
+          if (selectedItem) {
+            var newlink = {% url 'charts:base_testreport' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
+            window.location.href = newlink;
+          }
+        }
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+
+        chart.draw(mydata, google.charts.Bar.convertOptions(options));
+      }
+
+      $(window).resize(function() {
+          drawChart();
+        });
+    </script>
 
 {% endblock scripts %}
 
 {% block body %}
-
-        <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Hello</h1>
-                    {% for raw_release, obj in testruns.items %}
-                      <h2> {{ raw_release }} with </h2>
-                      <h4> {{ obj.passed }} </h4>
-                      <h4> {{ obj.failed }} </h4>
-                    {% endfor %}
-                </div>
-                <!-- /.col-lg-12 -->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Chart for release 1.7</h1>
             </div>
-            <!-- /.row -->
-
+            <!-- /.col-lg-12 -->
         </div>
-        <!-- /#page-wrapper -->
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div id="columnchart"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+                
+            </div>
+            <!-- /.col-lg-8 -->
+        </div>
+        <!-- /.row -->
 
+    </div>
+    <!-- /#page-wrapper -->
 
 {% endblock body %}
