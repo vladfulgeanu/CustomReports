@@ -6,31 +6,29 @@ from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
 
 def index(request):
 
-	testreports = []
+	version = "1.7"
 
-	# TODO check for null
-	lastest_testreports = get_list_or_404(TestReport)[-5:]
-	
-	for testreport in lastest_testreports:
-		filters_dict = {}
-		filters_json = json.loads(testreport.filters)
-		for key, value in filters_json.iteritems():
-			filters_dict[key] = value
+	testruns = {}
 
-		testreports.append(TestRun.objects.filter(**filters_dict))
+	raw_releases = TestRun.objects.filter(release__startswith=version).distinct('release')
 
-	passed = failed = 0
-	for testrun in testreports[0]:
-		no_testcaseresults = testrun.testcaseresult_set.count()
-		passed +=  no_testcaseresults - testrun.testcaseresult_set.filter(result="fail").count()
-		failed +=  no_testcaseresults - testrun.testcaseresult_set.filter(result="pass").count()
+	for raw_release in raw_releases:
+		passed = failed = 0
+		testruns_in_release = TestRun.objects.filter(release=raw_release.release)
+		for testrun_in_release in testruns_in_release:
+			passed += testrun_in_release.testcaseresult_set.filter(result='pass').count()
+			failed += testrun_in_release.testcaseresult_set.filter(result='fail').count()
+
+		testruns[raw_release.release] = {
+			'release' : raw_release.release[-3:],
+			'passed' : passed,
+			'failed' : failed
+		}
 
 	return render(request, 'charts/index.html', {
-			'latest_fails' : failed,
-			'latest_passes': passed,
-			'latest' : testreports[0],
-			'other'  : testreports[1:]
+			'testruns' : testruns
 		})
+	
 
 def dashboard(request):
 	
@@ -48,7 +46,7 @@ def dashboard(request):
 
 	last_testruns = all_testruns[-10:]
 	for testrun in last_testruns:
-		passed = testrun.testresult_set.filter(result="pass").count()
+		passed = testrun.testresult_set.filter(result='pass').count()
 		testruns.append({
 			'id'     : testrun.id,
 			'date'   : testrun.date,
@@ -67,7 +65,7 @@ def testrun(request, id):
 
 	testrun = get_object_or_404(TestRun, pk = id)
 	testcaseresults = testrun.testcaseresult_set.all
-	passed = testrun.testcaseresult_set.filter(result="pass").count()
+	passed = testrun.testcaseresult_set.filter(result='pass').count()
 
 	return render(request, 'charts/testrun.html', {
 			'date'        : testrun.date,
@@ -79,10 +77,45 @@ def testrun(request, id):
 			'testcaseresults' : testcaseresults
 		})
 
-def testcase (request, id):
+def testcase(request, id):
 
 	testcase = get_object_or_404(TestCase, pk = id)
 
 	return render (request, 'charts/testcase.html', {
 			'testcase'    : testcase
 		})
+
+def testreport(request, release):
+
+	testreport = TestRun.objects.filter(release=release)
+
+
+	passes = fails = 0
+	for testrun in testreport:
+		no_testcaseresults = testrun.testcaseresult_set.count()
+		passes +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='fail').count()
+		fails +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='pass').count()
+
+	return render(request, 'charts/testreport.html', {
+			'fails' : fails,
+			'passes': passes,
+			'release' : release,
+			'testreport' : testreport
+		})
+
+
+
+"""
+	testreports = []
+
+	# TODO check for null
+	lastest_testreports = get_list_or_404(TestReport)[-5:]
+	
+	for testreport in lastest_testreports:
+		filters_dict = {}
+		filters_json = json.loads(testreport.filters)
+		for key, value in filters_json.iteritems():
+			filters_dict[key] = value
+
+		testreports.append(TestRun.objects.filter(**filters_dict))
+"""

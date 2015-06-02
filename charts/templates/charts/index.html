@@ -3,35 +3,7 @@
 {% block title %}Yocto QA Tests{% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
 
-        var mydata = new google.visualization.DataTable();
-
-        mydata.addColumn('string', 'Category');
-        mydata.addColumn('number', 'Total tests');
-
-        mydata.addRow(['Passed', {{ latest_passes }}]);
-        mydata.addRow(['Failed', {{ latest_fails }}]);
-
-        var options = {
-            title: 'Total tests cases\' results',
-            height: 300,
-            legend: 'none',
-            pieHole: 0.3,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('latest_donutchart'));
-        chart.draw(mydata, options);
-      }
-
-      $(window).resize(function() {
-          drawChart();
-        });
-    </script>
 
 {% endblock scripts %}
 
@@ -40,48 +12,14 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Test Reports</h1>
+                    <h1 class="page-header">Hello</h1>
+                    {% for raw_release, obj in testruns.items %}
+                      <h2> {{ raw_release }} with </h2>
+                      <h4> {{ obj.passed }} </h4>
+                      <h4> {{ obj.failed }} </h4>
+                    {% endfor %}
                 </div>
                 <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-md-4 col-md-push-8">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h2 class="panel-title">Latest Test Report Pie Chart</h2>
-                        </div>
-                        <div class="panel-body">
-                          <div id="latest_donutchart" ></div>
-                        </div>
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-md-4 -->
-                <div class="col-md-8 col-md-pull-4">
-                    <h3>Latest Test Report</h3>
-                    {% for testrun in latest %}
-                        <ul>
-                            {% url 'charts:base_testrun' as base %}
-                            {% with base|add:testrun.testrun_id as link %}
-                            <li><a href="{{ link }}">{{ testrun.testrun_id }}</a></li>
-                            {% endwith %}
-                        </ul>
-                    {% endfor %}
-                    <br /><br />
-                    <h3>Other Test Reports</h3>
-                    {% for testreport in other %}
-                        {% for testrun in testreport %}
-                            <ul>
-                                {% url 'charts:base_testrun' as base %}
-                                {% with base|add:testrun.testrun_id as link %}
-                                <li><a href="{{ link }}">{{ testrun.testrun_id }}</a></li>
-                                {% endwith %}
-                            </ul>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-                <!-- /.col-md-8 -->
             </div>
             <!-- /.row -->
 

@@ -25,10 +25,10 @@ else:
 	print 'Error: TestReport json is not valid'
 	sys.exit(1)
 
-"""
+
 testplan = {
-	'name' : 'Toaster: dizzy branch',
-	'product' : 'Toaster',
+	'name' : 'BSP/QEMU: master branch',
+	'product' : 'BSPs',
 	'product_version' : '1.8',
 	'created' : '2015-01-07 09:16:42',
 	'author' : "Andreea Brandusa Proca <andreea.b.proca@intel.com>",
@@ -48,7 +48,7 @@ testplan2 = {}
 
 testplan2["name"] = "BSP/QEMU: danny branch"
 testplan2["product"] = "BSPs"
-testplan2["product_version"] = "1.3"
+testplan2["product_version"] = "1.8"
 testplan2["created"] = "2013-01-11 17:23:06"
 testplan2["author"] = "Stoicescu Cornel <corneliux.stoicescu@intel.com>"
 testplan2["version"] = "2"
@@ -146,6 +146,83 @@ else:
 
 ##############################
 
+testrun4 = {
+	"testrun_id" : "1795",
+	"release" : "1.7.2_rc4",
+	"test_type"  : "Weekly",
+	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-05-26 11:23:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "sugarbay"
+}
+
+testrun5 = {
+	"testrun_id" : "6537",
+	"release" : "1.7.2_rc4",
+	"test_type"  : "Weekly",
+	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-05-26 11:39:23",
+	"target" : "NUC",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "NUC"
+}
+
+testrun6 = {
+	"testrun_id" : "4724",
+	"release" : "1.7.2_rc4",
+	"test_type"  : "Full Pass",
+	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-05-26 11:39:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "Atom-PC"
+}
+
+testrun_form4 = TestRunForm(data=testrun4)
+
+if testrun_form4.is_valid():
+	testrun_obj4 = testrun_form4.save(commit=False)
+	testrun_obj4.testplan = testplan_obj
+	testrun_obj4.save()
+	print "TR4 saved"
+
+else:
+	print 'Error: TestRun4 json is not valid'
+	sys.exit(1)
+
+testrun_form5 = TestRunForm(data=testrun5)
+
+if testrun_form5.is_valid():
+	testrun_obj5 = testrun_form5.save(commit=False)
+	testrun_obj5.testplan = testplan_obj
+	testrun_obj5.save()
+	print "TR5 saved"
+
+else:
+	print 'Error: TestRun5 json is not valid'
+	sys.exit(1)
+
+testrun_form6 = TestRunForm(data=testrun6)
+
+if testrun_form6.is_valid():
+	testrun_obj6 = testrun_form6.save(commit=False)
+	testrun_obj6.testplan = testplan_obj
+	testrun_obj6.save()
+	print "TR6 saved"
+
+else:
+	print 'Error: TestRun6 json is not valid'
+	sys.exit(1)
+
+##############################
+
 testcase1 = {
 	"testcase_id" : "215",
 	"summary" : "do important thinggy",
@@ -168,7 +245,7 @@ testcase_form1 = TestCaseForm(data=testcase1)
 
 if testcase_form1.is_valid():
 	testcase_obj1 = testcase_form1.save(commit=False)
-	testcase_obj1.testplan = '1'
+	testcase_obj1.testplan = testplan_obj
 	testcase_obj1.save()
 	print "TC1 saved"
 
@@ -307,7 +384,128 @@ else:
 	print 'Error: TestCaseRes6 json is not valid'
 	sys.exit(1)
 
+
+##############################
+testcaseresult7 = {
+	"result" : "fail",
+	"started_on" : "2015-05-26 11:39:23",
+	"finished_on" : "2015-05-26 11:54:23"
+}
+
+testcaseresult8 = {
+	"result" : "pass",
+	"started_on" : "2015-05-26 11:23:23",
+	"finished_on" : "2015-05-26 11:24:23"
+}
+
+
+testcaseres_form7 = TestCaseResultForm(data=testcaseresult7)
+
+if testcaseres_form7.is_valid():
+	testcaseres_obj7 = testcaseres_form7.save(commit=False)
+	testcaseres_obj7.testcase = testcase_obj1
+	testcaseres_obj7.testrun = testrun_obj4
+	testcaseres_obj7.save()
+	print 'TCR7 saved'
+
+else:
+	print 'Error: TestCaseRes7 json is not valid'
+	sys.exit(1)
+
+testcaseres_form8 = TestCaseResultForm(data=testcaseresult8)
+
+if testcaseres_form8.is_valid():
+	testcaseres_obj8 = testcaseres_form8.save(commit=False)
+	testcaseres_obj8.testcase = testcase_obj2
+	testcaseres_obj8.testrun = testrun_obj4
+	testcaseres_obj8.save()
+	print 'TCR8 saved'
+
+else:
+	print 'Error: TestCaseRes8 json is not valid'
+	sys.exit(1)
+
+
+testcaseresult9 = {
+	"result" : "fail",
+	"started_on" : "2015-05-26 11:39:23",
+	"finished_on" : "2015-05-26 11:54:23"
+}
+
+testcaseresult10 = {
+	"result" : "pass",
+	"started_on" : "2015-05-26 11:23:23",
+	"finished_on" : "2015-05-26 11:24:23"
+}
+
+
+testcaseres_form9 = TestCaseResultForm(data=testcaseresult9)
+
+if testcaseres_form9.is_valid():
+	testcaseres_obj9 = testcaseres_form9.save(commit=False)
+	testcaseres_obj9.testcase = testcase_obj1
+	testcaseres_obj9.testrun = testrun_obj5
+	testcaseres_obj9.save()
+	print 'TCR9 saved'
+
+else:
+	print 'Error: TestCaseRes9 json is not valid'
+	sys.exit(1)
+
+testcaseres_form10 = TestCaseResultForm(data=testcaseresult10)
+
+if testcaseres_form10.is_valid():
+	testcaseres_obj10 = testcaseres_form10.save(commit=False)
+	testcaseres_obj10.testcase = testcase_obj2
+	testcaseres_obj10.testrun = testrun_obj5
+	testcaseres_obj10.save()
+	print 'TCR10 saved'
+
+else:
+	print 'Error: TestCaseRes10 json is not valid'
+	sys.exit(1)
+
+testcaseresult11 = {
+	"result" : "pass",
+	"started_on" : "2015-05-26 11:39:23",
+	"finished_on" : "2015-05-26 11:54:23"
+}
+
+testcaseresult12 = {
+	"result" : "pass",
+	"started_on" : "2015-05-26 11:23:23",
+	"finished_on" : "2015-05-26 11:24:23"
+}
+
+
+testcaseres_form11 = TestCaseResultForm(data=testcaseresult11)
+
+if testcaseres_form11.is_valid():
+	testcaseres_obj11 = testcaseres_form11.save(commit=False)
+	testcaseres_obj11.testcase = testcase_obj1
+	testcaseres_obj11.testrun = testrun_obj6
+	testcaseres_obj11.save()
+	print 'TCR11 saved'
+
+else:
+	print 'Error: TestCaseRes11 json is not valid'
+	sys.exit(1)
+
+testcaseres_form12 = TestCaseResultForm(data=testcaseresult12)
+
+if testcaseres_form12.is_valid():
+	testcaseres_obj12 = testcaseres_form12.save(commit=False)
+	testcaseres_obj12.testcase = testcase_obj2
+	testcaseres_obj12.testrun = testrun_obj6
+	testcaseres_obj12.save()
+	print 'TCR12 saved'
+
+else:
+	print 'Error: TestCaseRes12 json is not valid'
+	sys.exit(1)
+
 #############################################
+"""
 testrun = {}
 testrun["target"] = testrun_raw["attributes"]["target"]
 testrun["commit"] = testrun_raw["attributes"]["commit"]
