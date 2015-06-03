@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
-from . import views
+from . import views, tables
 
 urlpatterns = patterns('',
 
@@ -13,4 +13,6 @@ urlpatterns = patterns('',
     url(r'^testcase/', lambda x: HttpResponseBadRequest(), name='base_testcase'),
     url(r'^testreport/(?P<release>[\w.]+)$', 'charts.views.testreport', name='testreport'),
     url(r'^testreport/', lambda x: HttpResponseBadRequest(), name='base_testreport'),
+    url(r'^xhr_tables/', include('charts.tables')),
+
 )

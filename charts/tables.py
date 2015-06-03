@@ -20,36 +20,34 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from widgets import ToasterTable
-from charts.models import TestPlan
+from charts.models import TestRun
 from django.db.models import Q, Max
 from django.conf.urls import url
 
-class TestPlanTable(ToasterTable):
+class TestReportTable(ToasterTable):
     """Table of layers in Toaster"""
 
     def __init__(self, *args, **kwargs):
         ToasterTable.__init__(self)
-        self.default_orderby = "name"
+        self.default_orderby = "testrun_id"
 
     def setup_queryset(self, *args, **kwargs):
-        self.queryset = TestPlan.objects.all()
+        self.queryset = TestRun.objects.filter(release=kwargs[release])
 
     def setup_columns(self, *args, **kwargs):
 
-        self.add_column(title="Name",
+        self.add_column(title="ID",
                         hideable=False,
                         orderable=True,
-                        field_name="name")
+                        field_name="testrun_id")
 
 
         product_template='<a href="?{{data.product}}">{{data.product}}</a>'
 
-        self.add_column(title="Product",
+        self.add_column(title="Release",
                         hideable=False,
                         orderable=True,
-                        static_data_name="product",
-                        static_data_template=product_template,
-                        field_name="product")
+                        field_name="release")
  
         ## ....
 
@@ -57,6 +55,5 @@ class TestPlanTable(ToasterTable):
 # This needs to be staticaly defined here as django reads the url patterns
 # on start up
 urlpatterns = (
-    url(r'testplan/(?P<cmd>\w+)*', TestPlanTable.as_view(),
-        name=TestPlanTable.__name__.lower()),
+    url(r'testreport/(?P<cmd>\w+)*', TestReportTable.as_view(release=release), name=TestReportTable.__name__.lower()),
 )

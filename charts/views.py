@@ -3,6 +3,7 @@ from django.db.models import Q
 import json, collections
 
 from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
+from . import tables
 
 def index(request):
 
@@ -100,7 +101,8 @@ def testreport(request, release):
 			'fails' : fails,
 			'passes': passes,
 			'release' : release,
-			'testreport' : testreport
+			'testreport' : testreport,
+			'table_name' : tables.TestReportTable.__name__.lower()
 		})
 
 
