@@ -74,6 +74,9 @@ class TestRun(models.Model):
 	services_running = models.CharField(max_length=10000, blank=True)
 	package_versions_installed = models.CharField(max_length=20000, blank=True)
 
+	def get_passed_percentage(self):
+		return (self.testcaseresult_set.filter(result='pass').count() / float(self.testcaseresult_set.count())) * 100
+
 	def __str__(self):
 		return self.testrun_id + " " + self.test_type + " " + self.release
 

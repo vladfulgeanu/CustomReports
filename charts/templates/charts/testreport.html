@@ -40,8 +40,6 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Test Report for {{ release }}</h1>
-                    {% url 'charts:testreporttable' release as xhr_table_url %}
-                    {% include "charts/toastertable.html" %}
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -60,16 +58,8 @@
                 </div>
                 <!-- /.col-md-4 -->
                 <div class="col-md-8 col-md-pull-4">
-                    <h3>Test Report</h3>
-                    {% for testrun in testreport %}
-                        <ul>
-                            {% url 'charts:base_testrun' as base %}
-                            {% with base|add:testrun.testrun_id as link %}
-                            <li><a href="{{ link }}">{{ testrun.testrun_id }}</a></li>
-                            {% endwith %}
-                        </ul>
-                    {% endfor %}
-                    <br /><br />
+                    {% url 'charts:testreporttable' release as xhr_table_url %}
+                    {% include "charts/toastertable.html" %}
                 </div>
                 <!-- /.col-md-8 -->
             </div>

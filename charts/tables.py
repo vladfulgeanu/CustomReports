@@ -32,22 +32,56 @@ class TestReportTable(ToasterTable):
         self.default_orderby = "testrun_id"
 
     def setup_queryset(self, *args, **kwargs):
-        self.queryset = TestRun.objects.filter(release=kwargs['release'])
+        testruns = TestRun.objects.filter(release=kwargs['release'])
+
+        self.queryset = testruns.order_by(self.default_orderby)
 
     def setup_columns(self, *args, **kwargs):
 
-        self.add_column(title="ID",
+        testrun_template = '''
+        {% url 'charts:base_testrun' as base %}
+        {% with base|add:data.testrun_id as link %}
+        <a href="{{ link }}"> {{ data.testrun_id }} </a>
+        {% endwith %}
+        '''
+
+        self.add_column(title="Test Run",
                         hideable=False,
                         orderable=True,
-                        field_name="testrun_id")
+                        static_data_name="testrun_id",
+                        static_data_template=testrun_template)
 
 
-        product_template='<a href="?{{data.product}}">{{data.product}}</a>'
-
-        self.add_column(title="Release",
+        self.add_column(title="Test Plan",
                         hideable=False,
                         orderable=True,
-                        field_name="release")
+                        field_name="testplan__name")
+
+        env_template = '''
+        {% if data.target == data.hw %}
+            <span>{{ data.target }}</span>
+        {% else %}
+            <span>{{ data.target }} on {{ data.hw }}</span>
+        {% endif %}
+        '''
+
+        self.add_column(title="Environment",
+                        hideable=False,
+                        orderable=True,
+                        static_data_name="target",
+                        static_data_template=env_template)
+
+        passed_template = '''
+        {% with percentage=data.get_passed_percentage %}
+        <span>{{ percentage }}%</span>
+        {% endwith %}
+        '''
+
+        self.add_column(title="Passed",
+                        hideable=False,
+                        orderable=True,
+                        static_data_name="testcaseresult_set",
+                        static_data_template=passed_template)
  
         ## ....
 
