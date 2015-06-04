@@ -32,7 +32,7 @@ class TestReportTable(ToasterTable):
         self.default_orderby = "testrun_id"
 
     def setup_queryset(self, *args, **kwargs):
-        self.queryset = TestRun.objects.filter(release=kwargs[release])
+        self.queryset = TestRun.objects.filter(release=kwargs['release'])
 
     def setup_columns(self, *args, **kwargs):
 
@@ -55,5 +55,5 @@ class TestReportTable(ToasterTable):
 # This needs to be staticaly defined here as django reads the url patterns
 # on start up
 urlpatterns = (
-    url(r'testreport/(?P<cmd>\w+)*', TestReportTable.as_view(release=release), name=TestReportTable.__name__.lower()),
+    url(r'testreport/(?P<release>[\w.]+)/(?P<cmd>\w+)*', TestReportTable.as_view(), name=TestReportTable.__name__.lower()),
 )
