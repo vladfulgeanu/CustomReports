@@ -58,6 +58,7 @@ class TestRun(models.Model):
 	testrun_id = models.CharField(max_length=10, primary_key=True)
 	testplan = models.ForeignKey(TestPlan, verbose_name="the related Test Plan")
 
+	version = models.CharField(max_length=10, blank=True)
 	release = models.CharField(max_length=30, blank=True)
 	test_type = models.CharField(max_length=15, choices=TYPE_CHOICES)
 	poky_commit = models.CharField(max_length=100)
@@ -128,7 +129,7 @@ class TestPlanForm(ModelForm):
 class TestRunForm(ModelForm):
 	class Meta:
 		model = TestRun
-		fields = ['testrun_id', 'release', 'test_type', 'poky_commit', 'poky_branch', 'date', 'target', 'image_type', 'hw_arch', 
+		fields = ['testrun_id', 'version', 'release', 'test_type', 'poky_commit', 'poky_branch', 'date', 'target', 'image_type', 'hw_arch', 
 		'hw', 'host_os', 'other_layers_commits', 'ab_image_repo', 'services_running', 'package_versions_installed']
 
 class TestCaseForm(ModelForm):

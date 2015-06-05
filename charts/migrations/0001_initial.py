@@ -29,8 +29,8 @@ class Migration(migrations.Migration):
                 ('message', models.CharField(max_length=30000, blank=True)),
                 ('started_on', models.DateTimeField(blank=True)),
                 ('finished_on', models.DateTimeField(blank=True)),
-                ('attachments', models.CharField(max_length=1000)),
-                ('comments', models.CharField(max_length=1000)),
+                ('attachments', models.CharField(max_length=1000, blank=True)),
+                ('comments', models.CharField(max_length=1000, blank=True)),
                 ('testcase', models.ForeignKey(to='charts.TestCase')),
             ],
         ),
@@ -48,12 +48,19 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='TestReport',
+            fields=[
+                ('testreport_id', models.CharField(max_length=10, serialize=False, primary_key=True)),
+                ('filters', models.CharField(max_length=10000)),
+            ],
+        ),
+        migrations.CreateModel(
             name='TestRun',
             fields=[
                 ('testrun_id', models.CharField(max_length=10, serialize=False, primary_key=True)),
+                ('y_version', models.CharField(max_length=10, blank=True)),
                 ('release', models.CharField(max_length=30, blank=True)),
-                ('report_id', models.CharField(max_length=30, blank=True)),
-                ('test_type', models.CharField(max_length=15, choices=[(b'weekly', b'Weekly'), (b'fullpass', b'Full Pass')])),
+                ('test_type', models.CharField(max_length=15, choices=[(b'Weekly', b'Weekly'), (b'Full Pass', b'Full Pass')])),
                 ('poky_commit', models.CharField(max_length=100)),
                 ('poky_branch', models.CharField(max_length=15)),
                 ('date', models.DateTimeField()),
@@ -66,7 +73,7 @@ class Migration(migrations.Migration):
                 ('ab_image_repo', models.CharField(max_length=100, blank=True)),
                 ('services_running', models.CharField(max_length=10000, blank=True)),
                 ('package_versions_installed', models.CharField(max_length=20000, blank=True)),
-                ('testplan', models.ForeignKey(to='charts.TestPlan')),
+                ('testplan', models.ForeignKey(verbose_name=b'the related Test Plan', to='charts.TestPlan')),
             ],
         ),
         migrations.AddField(

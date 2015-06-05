@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RenameField(
             model_name='testrun',
-            name='test_type',
-            field=models.CharField(max_length=15, choices=[(b'Weekly', b'Weekly'), (b'Full Pass', b'Full Pass')]),
+            old_name='y_version',
+            new_name='version',
         ),
     ]

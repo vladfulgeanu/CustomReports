@@ -35,10 +35,10 @@
 
           colors: ['#8bc34a', '#d32f2f'],
 
-          //isStacked: true,
+          isStacked: true,
 
           chart: {
-            title: 'Tests run for version 1.7',
+            title: 'Tests run for version {{ version }}',
           },
         };
 
@@ -67,7 +67,7 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Chart for release 1.7</h1>
+                <h1 class="page-header">Chart for release {{ version }}</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -76,6 +76,21 @@
             <div class="col-lg-8">
                 <div class="panel panel-default">
                     <div class="panel-body">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                                Select version
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                {% for choice in version_form.versions.field.choices %}
+                                    {% if forloop.counter0 == 0 %}
+                                    {% else %}
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'charts:index_2' choice.0 %}">{{ choice.0 }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br />
                         <div id="columnchart"></div>
                     </div>
                     <!-- /.panel-body -->

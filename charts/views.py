@@ -1,17 +1,37 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.db.models import Q
+from django import forms
 import json, collections
 
 from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
 from . import tables
 
-def index(request):
+class ModelChoiceField(forms.ModelChoiceField):
+	def label_from_instance(self, obj):
+		return obj.release[:3]
 
-	version = "1.7"
+class ReleaseForm(forms.Form):
+	versions = ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), empty_label="Select version", to_field_name="version")
+
+def index(request, version=None):
+
+	version_form = ReleaseForm()
+	# if request.method == 'POST':
+	# 	version_form = ReleaseForm(request.POST)
+	# 	if version_form.is_valid:
+	# 		return HttpResponseRedirect(reverse('charts:dashboard'))
+
+
+	if not version:
+		latest_version = TestRun.objects.order_by('-version').distinct('version').values_list('version')[0][0]
+	else:
+		latest_version = version
 
 	testruns = {}
 
-	uniq_release_testruns = TestRun.objects.filter(release__startswith=version).distinct('release')
+	uniq_release_testruns = TestRun.objects.filter(version=latest_version).distinct('release')
 
 	for uniq_release_testrun in uniq_release_testruns:
 		passed = failed = 0
@@ -21,13 +41,16 @@ def index(request):
 			failed += testrun_in_release.testcaseresult_set.filter(result='fail').count()
 
 		testruns[uniq_release_testrun.release.encode('ascii', 'ignore')] = {
-			'release' : uniq_release_testrun.release[-3:],
+			'rc' : uniq_release_testrun.release[-3:],
 			'passed' : passed,
 			'failed' : failed
 		}
 
+	print version_form
 	return render(request, 'charts/index.html', {
-			'testruns' : collections.OrderedDict(sorted(testruns.items()))
+			'version_form' : version_form,
+			'version' : latest_version,
+			'testruns' : collections.OrderedDict(sorted(testruns.items(), reverse=True))
 		})
 	
 

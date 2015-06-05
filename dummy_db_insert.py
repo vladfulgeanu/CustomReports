@@ -70,6 +70,7 @@ else:
 
 testrun = {
 	"testrun_id" : "1245",
+	"version" : "1.7",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Weekly",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -83,6 +84,7 @@ testrun = {
 
 testrun2 = {
 	"testrun_id" : "3245",
+	"version" : "1.7",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Weekly",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -96,6 +98,7 @@ testrun2 = {
 
 testrun3 = {
 	"testrun_id" : "2123",
+	"version" : "1.7",
 	"release" : "1.7.2_rc3",
 	"test_type"  : "Full Pass",
 	"poky_commit" : "29812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -148,6 +151,7 @@ else:
 
 testrun4 = {
 	"testrun_id" : "1795",
+	"version" : "1.7",
 	"release" : "1.7.2_rc4",
 	"test_type"  : "Weekly",
 	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -161,6 +165,7 @@ testrun4 = {
 
 testrun5 = {
 	"testrun_id" : "6537",
+	"version" : "1.7",
 	"release" : "1.7.2_rc4",
 	"test_type"  : "Weekly",
 	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -174,6 +179,7 @@ testrun5 = {
 
 testrun6 = {
 	"testrun_id" : "4724",
+	"version" : "1.7",
 	"release" : "1.7.2_rc4",
 	"test_type"  : "Full Pass",
 	"poky_commit" : "32812e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -225,6 +231,7 @@ else:
 
 testrun7 = {
 	"testrun_id" : "2895",
+	"version" : "1.7",
 	"release" : "1.7.2_rc2",
 	"test_type"  : "Weekly",
 	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -238,6 +245,7 @@ testrun7 = {
 
 testrun8 = {
 	"testrun_id" : "4391",
+	"version" : "1.7",
 	"release" : "1.7.2_rc2",
 	"test_type"  : "Weekly",
 	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -251,6 +259,7 @@ testrun8 = {
 
 testrun9 = {
 	"testrun_id" : "3528",
+	"version" : "1.7",
 	"release" : "1.7.2_rc2",
 	"test_type"  : "Full Pass",
 	"poky_commit" : "gyh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
@@ -299,6 +308,35 @@ else:
 	sys.exit(1)
 
 ##############################
+
+testrun10 = {
+	"testrun_id" : "3457",
+	"version" : "1.8",
+	"release" : "1.8_rc1",
+	"test_type"  : "Full Pass",
+	"poky_commit" : "fgh12e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-06-10 11:39:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "Atom-PC"
+}
+
+testrun_form10 = TestRunForm(data=testrun10)
+
+if testrun_form10.is_valid():
+	testrun_obj10 = testrun_form10.save(commit=False)
+	testrun_obj10.testplan = testplan_obj
+	testrun_obj10.save()
+	print "TR10 saved"
+
+else:
+	print 'Error: TestRun10 json is not valid'
+	sys.exit(1)
+
+
+#################################
 
 testcase1 = {
 	"testcase_id" : "215",
@@ -699,6 +737,45 @@ if testcaseres_form18.is_valid():
 
 else:
 	print 'Error: TestCaseRes18 json is not valid'
+	sys.exit(1)
+##############################
+testcaseresult19 = {
+	"result" : "pass",
+	"started_on" : "2015-06-10 11:39:23",
+	"finished_on" : "2015-06-10 11:54:23"
+}
+
+testcaseresult20 = {
+	"result" : "pass",
+	"started_on" : "2015-06-10 11:23:23",
+	"finished_on" : "2015-06-10 11:24:23"
+}
+
+
+testcaseres_form19 = TestCaseResultForm(data=testcaseresult19)
+
+if testcaseres_form19.is_valid():
+	testcaseres_obj19 = testcaseres_form19.save(commit=False)
+	testcaseres_obj19.testcase = testcase_obj1
+	testcaseres_obj19.testrun = testrun_obj10
+	testcaseres_obj19.save()
+	print 'TCR19 saved'
+
+else:
+	print 'Error: TestCaseRes19 json is not valid'
+	sys.exit(1)
+
+testcaseres_form20 = TestCaseResultForm(data=testcaseresult20)
+
+if testcaseres_form20.is_valid():
+	testcaseres_obj20 = testcaseres_form20.save(commit=False)
+	testcaseres_obj20.testcase = testcase_obj2
+	testcaseres_obj20.testrun = testrun_obj10
+	testcaseres_obj20.save()
+	print 'TCR20 saved'
+
+else:
+	print 'Error: TestCaseRes20 json is not valid'
 	sys.exit(1)
 
 #############################################
