@@ -21,7 +21,8 @@
 
 from widgets import ToasterTable
 from charts.models import TestRun
-from django.db.models import Q, Max
+from django.db.models import Q
+from django.db.models import Count, Max, Min, Sum, Avg
 from django.conf.urls import url
 
 class TestReportTable(ToasterTable):
@@ -29,10 +30,10 @@ class TestReportTable(ToasterTable):
 
     def __init__(self, *args, **kwargs):
         ToasterTable.__init__(self)
-        self.default_orderby = "testrun_id"
+        self.default_orderby = "target"
 
     def setup_queryset(self, *args, **kwargs):
-        testruns = TestRun.objects.filter(release=kwargs['release'])
+        testruns = TestRun.objects.filter(release=kwargs['release']).distinct('testplan', 'target', 'hw')
 
         self.queryset = testruns.order_by(self.default_orderby)
 
@@ -40,16 +41,33 @@ class TestReportTable(ToasterTable):
 
         testrun_template = '''
         {% url 'charts:base_testrun' as base %}
-        {% with base|add:data.testrun_id as link %}
-        <a href="{{ link }}"> {{ data.testrun_id }} </a>
-        {% endwith %}
+        {% for testrun in data.get_for_target_hw %}
+            {% with base|add:testrun.testrun_id as link %}
+            <a href="{{ link }}">{{ testrun.testrun_id }} </a>
+            {% endwith %}
+        {% endfor %}
         '''
 
         self.add_column(title="Test Run",
                         hideable=False,
-                        orderable=True,
+                        orderable=False,
                         static_data_name="testrun_id",
                         static_data_template=testrun_template)
+
+        custom_template = '''
+        {% url 'charts:plan_env' data.release data.testplan.id data.target data.hw as hug %}
+        {% if data.target == data.hw %}
+            <a href="{{ hug }}">{{ data.testplan.name }} on {{ data.hw }} </a>
+        {% else %}
+            <a href="{{ hug }}">{{ data.testplan.name }} with {{ data.target }} on {{ data.hw }} </a>
+        {% endif %}
+        '''
+
+        self.add_column(title="Custom",
+                hideable=False,
+                orderable=False,
+                static_data_name="custom",
+                static_data_template=custom_template)
 
 
         self.add_column(title="Test Plan",
@@ -71,16 +89,21 @@ class TestReportTable(ToasterTable):
                         static_data_name="target",
                         static_data_template=env_template)
 
+
+        # total = self.queryset.annotate(total=Count('testcaseresult'))
+        # total_passed = self.queryset.annotate(passed=Sum(testcaseresult__result__in=['pass']))
+        # print total + "   " + total_passed
         passed_template = '''
         {% with percentage=data.get_passed_percentage %}
         <span>{{ percentage }}%</span>
         {% endwith %}
         '''
 
+
         self.add_column(title="Passed",
                         hideable=False,
-                        orderable=True,
-                        static_data_name="testcaseresult_set",
+                        orderable=False,
+                        static_data_name="custom2",
                         static_data_template=passed_template)
  
         ## ....

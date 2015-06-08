@@ -1,0 +1,82 @@
+{% extends "charts/base.html" %}
+
+{% block title %}Yocto QA Tests{% endblock %}
+
+{% block scripts %}
+<script>
+    $(function() {
+        $('#collapse').metisMenu({
+            toggle: false,            
+            doubleTapToGo: true
+        });
+
+    });
+</script>
+
+{% endblock scripts %}
+
+{% block body %}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Test Runs in {{ testplan }} with {{ target }} on {{ hw }}</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-8">
+                <ul id="collapse">
+                    {% for testrun in testruns %}
+                        <li style="font-size:20px;">                                
+                            {% url 'charts:base_testrun' as base %}
+                            {% with base|add:testrun.testrun_id as link %}
+                            <a href="{{ link }}">{{ testrun.testrun_id }}</a>
+                            {% endwith %}
+                            has
+
+                            {% with failed|get_item:testrun.testrun_id as testrun_fails %}
+                            {% if testrun_fails|length == 0 %}
+                                <span class="text-success"> {{ testrun_fails|length }} </span>
+                            {% else %}
+                                <span class="text-danger"> {{ testrun_fails|length }} </span>
+                            {% endif %}
+
+                            failed tests &nbsp;&nbsp;
+                            <a href="#"><span class="fa arrow" style="float:none;"></span></a>
+                            <br />
+
+                            <ul>
+                            {% if testrun_fails|length == 0 %}
+                                <li> No failed test cases </li>
+                            {% else %}
+                                {% for testcaseresult in testrun_fails %}
+                                    <li>
+                                        {% url 'charts:base_testcase' as base %}
+                                        {% with base|add:testcaseresult.testcase.testcase_id as link %}
+                                        <a href="{{ link }}">{{ testcaseresult.testcase.testcase_id }}</a>
+                                        {% endwith %}
+                                        <span class="text-danger">{{ testcaseresult.result }}ed</span>:
+                                        <br />
+                                        <pre>{{ testcaseresult.message }}</pre>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                            </ul>
+                            {% endwith %}
+
+                        </li>
+                        <br />
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- /.col-lg-8 -->
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+
+{% endblock body %}

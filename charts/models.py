@@ -50,7 +50,12 @@ class TestPlan(models.Model):
 	def __str__(self):
 		return self.name + " version: " + self.product_version
 
+class TestRunManager(models.Manager):
+	def get_query_set(self):
+		auths
+
 class TestRun(models.Model):
+
 	TYPE_CHOICES = (
 		('Weekly', 'Weekly'),
 		('Full Pass', 'Full Pass')
@@ -77,6 +82,9 @@ class TestRun(models.Model):
 
 	def get_passed_percentage(self):
 		return (self.testcaseresult_set.filter(result='pass').count() / float(self.testcaseresult_set.count())) * 100
+
+	def get_for_target_hw(self):
+		return TestRun.objects.filter(release=self.release).filter(testplan=self.testplan, target=self.target, hw=self.hw)
 
 	def __str__(self):
 		return self.testrun_id + " " + self.test_type + " " + self.release
@@ -111,7 +119,7 @@ class TestCaseResult(models.Model):
 	comments = models.CharField(max_length=1000, blank=True)
 
 	def __str__(self):
-		return self.testrun.testcase_id + " " + self.result + "ed"
+		return self.testcase.testcase_id + " " + self.result + "ed"
 
 class TestReport(models.Model):
 	testreport_id = models.CharField(max_length=10, primary_key=True)

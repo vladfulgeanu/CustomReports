@@ -26,6 +26,7 @@ from django.core import serializers
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
+from django.db.models import Count, Max, Min, Sum, Avg
 from django.template import Context, Template
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import FieldError
@@ -193,6 +194,21 @@ class ToasterTable(View):
 
     def apply_orderby(self, orderby):
         # Note that django will execute this when we try to retrieve the data
+        # if not hasattr(self.queryset.model, orderby):
+        #     print "fdafA FOST??SF??A"
+        #     print isinstance(self.queryset, list)
+        #     print "A FOST??SF??A"
+        #     self.queryset = sorted(self.queryset, key=lambda x: x.get_passed_percentage())
+        #     print isinstance(self.queryset, list)
+        #     print "2fasfA FOST??SF??A"
+        # else:
+
+
+        # if orderby == "custom":
+        #     self.queryset = self.queryset.annotate(passed=Count('testcaseresult__result')).order_by('passed')
+        # elif orderby == "-custom":
+        #     self.queryset = self.queryset.annotate(passed=Count('testcaseresult')).order_by('-passed')
+        # else:
         self.queryset = self.queryset.order_by(orderby)
 
     def apply_search(self, search_term):

@@ -1,4 +1,5 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.template.defaulttags import register
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Q
@@ -7,6 +8,10 @@ import json, collections
 
 from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
 from . import tables
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 class ModelChoiceField(forms.ModelChoiceField):
 	def label_from_instance(self, obj):
@@ -23,10 +28,12 @@ def index(request, version=None):
 	# 	if version_form.is_valid:
 	# 		return HttpResponseRedirect(reverse('charts:dashboard'))
 
+	start = True
 
 	if not version:
 		latest_version = TestRun.objects.order_by('-version').distinct('version').values_list('version')[0][0]
 	else:
+		start = False
 		latest_version = version
 
 	testruns = {}
@@ -46,9 +53,9 @@ def index(request, version=None):
 			'failed' : failed
 		}
 
-	print version_form
 	return render(request, 'charts/index.html', {
 			'version_form' : version_form,
+			'start' : start,
 			'version' : latest_version,
 			'testruns' : collections.OrderedDict(sorted(testruns.items(), reverse=True))
 		})
@@ -128,6 +135,22 @@ def testreport(request, release):
 			'table_name' : tables.TestReportTable.__name__.lower()
 		})
 
+def planenv(request, release, testplan, target, hw):
+
+	failed = {}
+	testruns = TestRun.objects.filter(release=release).filter(testplan_id=testplan, target=target, hw=hw)
+	for testrun in testruns:
+		failed[testrun.testrun_id] = testrun.testcaseresult_set.filter(result='fail').all()
+
+	testplan_name = testruns[0].testplan.name
+
+	return render(request, 'charts/planenv.html', {
+			'testplan' : testplan_name,
+			'target' : target,
+			'hw' : hw,
+			'testruns' : testruns,
+			'failed' : failed
+		})
 
 
 """

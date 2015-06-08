@@ -78,7 +78,11 @@
                     <div class="panel-body">
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                                Select version
+                                {% if start %}
+                                    Select version
+                                {% else %}
+                                    {{ version }}
+                                {% endif %}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">

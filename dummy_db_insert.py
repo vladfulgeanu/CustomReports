@@ -336,6 +336,33 @@ else:
 	sys.exit(1)
 
 
+testrun11 = {
+	"testrun_id" : "6932",
+	"version" : "1.7",
+	"release" : "1.7.2_rc2",
+	"test_type"  : "Full Pass",
+	"poky_commit" : "tg312e61736a95f1de64b3e9ebbb9c646ebd28dd",
+	"poky_branch" : "dizzy",
+	"date" : "2015-04-27 11:39:23",
+	"target" : "genericx86",
+	"image_type" : "core-image-sato",
+	"hw_arch" : "x86_64",
+	"hw" : "Atom-PC"
+}
+
+testrun_form11 = TestRunForm(data=testrun11)
+
+if testrun_form11.is_valid():
+	testrun_obj11 = testrun_form11.save(commit=False)
+	testrun_obj11.testplan = testplan_obj
+	testrun_obj11.save()
+	print "TR11 saved"
+
+else:
+	print 'Error: TestRun11 json is not valid'
+	sys.exit(1)
+
+
 #################################
 
 testcase1 = {
@@ -776,6 +803,46 @@ if testcaseres_form20.is_valid():
 
 else:
 	print 'Error: TestCaseRes20 json is not valid'
+	sys.exit(1)
+
+
+testcaseresult21 = {
+	"result" : "pass",
+	"started_on" : "2015-04-27 11:39:23",
+	"finished_on" : "2015-04-27 11:54:23"
+}
+
+testcaseresult22 = {
+	"result" : "pass",
+	"started_on" : "2015-04-27 11:23:23",
+	"finished_on" : "2015-04-27 11:24:23"
+}
+
+
+testcaseres_form21 = TestCaseResultForm(data=testcaseresult21)
+
+if testcaseres_form21.is_valid():
+	testcaseres_obj21 = testcaseres_form21.save(commit=False)
+	testcaseres_obj21.testcase = testcase_obj1
+	testcaseres_obj21.testrun = testrun_obj11
+	testcaseres_obj21.save()
+	print 'TCR21 saved'
+
+else:
+	print 'Error: TestCaseRes21 json is not valid'
+	sys.exit(1)
+
+testcaseres_form22 = TestCaseResultForm(data=testcaseresult22)
+
+if testcaseres_form22.is_valid():
+	testcaseres_obj22 = testcaseres_form22.save(commit=False)
+	testcaseres_obj22.testcase = testcase_obj2
+	testcaseres_obj22.testrun = testrun_obj11
+	testcaseres_obj22.save()
+	print 'TCR22 saved'
+
+else:
+	print 'Error: TestCaseRes22 json is not valid'
 	sys.exit(1)
 
 #############################################
