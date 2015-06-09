@@ -72,8 +72,10 @@
                                             <span class="text-danger">{{ testcaseresult.result }}ed</span>:
                                             <br />
                                             <pre>{{ testcaseresult.message }}</pre>
-                                        {% else %}
+                                        {% elseif testcaseresult.result == 'pass' %}
                                             <span class="text-success">{{ testcaseresult.result }}ed</span>
+                                        {% else %}
+                                            <span >is {{ testcaseresult.result }}</span>
                                         {% endif %}
                                     </li>
                                 {% endfor %}

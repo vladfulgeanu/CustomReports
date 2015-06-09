@@ -80,11 +80,38 @@ class TestRun(models.Model):
 	services_running = models.CharField(max_length=10000, blank=True)
 	package_versions_installed = models.CharField(max_length=20000, blank=True)
 
-	def get_passed_percentage(self):
-		return (self.testcaseresult_set.filter(result='pass').count() / float(self.testcaseresult_set.count())) * 100
-
-	def get_for_target_hw(self):
+	def get_for_plan_env(self):
 		return TestRun.objects.filter(release=self.release).filter(testplan=self.testplan, target=self.target, hw=self.hw)
+
+	def get_total(self):
+		total = 0
+		for testrun in self.get_for_plan_env():
+			total += testrun.testcaseresult_set.count()
+		return total
+
+	def get_run(self):
+		run = 0
+		for testrun in self.get_for_plan_env():
+			run += testrun.testcaseresult_set.filter(~models.Q(result='idle')).count()
+		return run
+
+	def get_passed(self):
+		passed = 0
+		for testrun in self.get_for_plan_env():
+			passed += testrun.testcaseresult_set.filter(result='pass').count()
+		return passed
+
+	def get_failed(self):
+		failed = 0
+		for testrun in self.get_for_plan_env():
+			failed += testrun.testcaseresult_set.filter(result='fail').count()
+		return failed
+
+	def get_abs_passed_percentage(self):
+		return (self.get_passed() / float(self.get_total())) * 100
+
+	def get_relative_passed_percentage(self):
+		return (self.get_passed() / float(self.get_run())) * 100
 
 	def __str__(self):
 		return self.testrun_id + " " + self.test_type + " " + self.release
@@ -105,7 +132,9 @@ class TestCase(models.Model):
 class TestCaseResult(models.Model):
 	RESULT_CHOICES = (
 		('pass', 'pass'),
-		('fail', 'fail')
+		('fail', 'fail'),
+		('blocked', 'blocked'),
+		('idle', 'idle')
 	)
 
 	testcase = models.ForeignKey(TestCase)

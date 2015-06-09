@@ -49,6 +49,7 @@ class ToasterTable(View):
         self.filter_actions = {}
         self.empty_state = "Sorry - no data found"
         self.default_orderby = ""
+        self.total = 0
 
     def get(self, request, *args, **kwargs):
         self.setup_queryset(*args, **kwargs)
@@ -305,6 +306,24 @@ class ToasterTable(View):
                         required_data[field] = model_data
 
                 data['rows'].append(required_data)
+
+            print data['rows'][-1]
+
+
+            required_data = {}
+            required_data = {
+                1 : 'Total',
+                2 : '',
+                3 : 3,
+                4 : 4,
+                5 : 5,
+                6 : 6,
+            }
+            # for col in self.columns:
+            #     if "static_data_name" in col and col['static_data_name']=='total':
+            #         required_data[col['static_data_name']] = 2
+
+            data['rows'].append(required_data)
 
         except FieldError:
             print "Error: Requested field does not exist"

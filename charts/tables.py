@@ -39,13 +39,13 @@ class TestReportTable(ToasterTable):
 
     def setup_columns(self, *args, **kwargs):
 
-        testrun_template = '''
-        {% url 'charts:base_testrun' as base %}
-        {% for testrun in data.get_for_target_hw %}
-            {% with base|add:testrun.testrun_id as link %}
-            <a href="{{ link }}">{{ testrun.testrun_id }} </a>
-            {% endwith %}
-        {% endfor %}
+        testrun_template = '''\
+        {% url 'charts:base_testrun' as base %}\
+        {% for testrun in data.get_for_plan_env %}\
+            {% with base|add:testrun.testrun_id as link %}\
+            <a href="{{ link }}">{{ testrun.testrun_id }} </a>\
+            {% endwith %}\
+        {% endfor %}\
         '''
 
         self.add_column(title="Test Run",
@@ -54,57 +54,101 @@ class TestReportTable(ToasterTable):
                         static_data_name="testrun_id",
                         static_data_template=testrun_template)
 
-        custom_template = '''
-        {% url 'charts:plan_env' data.release data.testplan.id data.target data.hw as hug %}
-        {% if data.target == data.hw %}
-            <a href="{{ hug }}">{{ data.testplan.name }} on {{ data.hw }} </a>
-        {% else %}
-            <a href="{{ hug }}">{{ data.testplan.name }} with {{ data.target }} on {{ data.hw }} </a>
-        {% endif %}
+        custom_template = '''\
+        {% url 'charts:plan_env' data.release data.testplan.id data.target data.hw as link %}\
+        {% if data.target == data.hw %}\
+            <a href="{{ link }}">{{ data.testplan.name }} on {{ data.hw }} </a>\
+        {% else %}\
+            <a href="{{ link }}">{{ data.testplan.name }} with {{ data.target }} on {{ data.hw }} </a>\
+        {% endif %}\
         '''
 
-        self.add_column(title="Custom",
+        self.add_column(title="Test Plan per environment",
                 hideable=False,
                 orderable=False,
-                static_data_name="custom",
+                static_data_name="plan_env",
                 static_data_template=custom_template)
 
-
-        self.add_column(title="Test Plan",
-                        hideable=False,
-                        orderable=True,
-                        field_name="testplan__name")
-
-        env_template = '''
-        {% if data.target == data.hw %}
-            <span>{{ data.target }}</span>
-        {% else %}
-            <span>{{ data.target }} on {{ data.hw }}</span>
-        {% endif %}
+        total_template = '''\
+        {% with total=data.get_total %}\
+        <span>{{ total }}</span>\
+        {% endwith %}\
         '''
 
-        self.add_column(title="Environment",
-                        hideable=False,
-                        orderable=True,
-                        static_data_name="target",
-                        static_data_template=env_template)
+        self.add_column(title="Total",
+                hideable=False,
+                orderable=False,
+                static_data_name="total",
+                static_data_template=total_template)
 
+
+        run_template = '''\
+        {% with run=data.get_run %}\
+        <span>{{ run }}</span>\
+        {% endwith %}\
+        '''
+
+        self.add_column(title="Run",
+                hideable=False,
+                orderable=False,
+                static_data_name="run",
+                static_data_template=run_template)
+
+        passed_template = '''\
+        {% with passed=data.get_passed %}\
+        <span>{{ passed }}</span>\
+        {% endwith %}\
+        '''
+
+        self.add_column(title="Passed",
+                hideable=False,
+                orderable=False,
+                static_data_name="passed",
+                static_data_template=passed_template)
+
+
+        failed_template = '''\
+        {% with failed=data.get_failed %}\
+        {% if failed == 0 %}\
+            <span class="text-success">{{ failed }}</span>\
+        {% else %}\
+            <span class="text-danger">{{ failed }}</span>\
+        {% endif %}\
+        {% endwith %}\
+        '''
+
+        self.add_column(title="Failed",
+                hideable=False,
+                orderable=False,
+                static_data_name="failed",
+                static_data_template=failed_template)
 
         # total = self.queryset.annotate(total=Count('testcaseresult'))
         # total_passed = self.queryset.annotate(passed=Sum(testcaseresult__result__in=['pass']))
         # print total + "   " + total_passed
-        passed_template = '''
-        {% with percentage=data.get_passed_percentage %}
-        <span>{{ percentage }}%</span>
-        {% endwith %}
+        abs_pass_template = '''\
+        {% with percentage=data.get_abs_passed_percentage %}\
+        <span>{{ percentage }}%</span>\
+        {% endwith %}\
         '''
 
-
-        self.add_column(title="Passed",
+        self.add_column(title="Pass/Total",
                         hideable=False,
                         orderable=False,
-                        static_data_name="custom2",
-                        static_data_template=passed_template)
+                        static_data_name="pass_total",
+                        static_data_template=abs_pass_template)
+
+        relative_pass_template = '''\
+        {% with percentage=data.get_relative_passed_percentage %}\
+        <span>{{ percentage }}%</span>\
+        {% endwith %}\
+        '''
+
+        self.add_column(title="Pass/Run",
+                        hideable=False,
+                        orderable=False,
+                        static_data_name="pass_run",
+                        static_data_template=relative_pass_template)
  
         ## ....
 

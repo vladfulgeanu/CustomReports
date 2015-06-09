@@ -18,11 +18,25 @@
         mydata.addRow(['Failed', {{ fails }}]);
 
         var options = {
-            height: 400,
+            height: 300,
             pieHole: 0.3,
+            fontSize: 18,
+            legend : {
+                position: 'right',
+                alignment: 'center',
+                textStyle: {
+                    fontSize: 20
+                }
+            },
+            chartArea: {
+                left : 60,
+                top : 0,
+                width: '100%',
+                height: '100%'
+            },
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('latest_donutchart'));
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
         chart.draw(mydata, options);
       }
 
@@ -47,10 +61,10 @@
                 <div class="col-md-4 col-md-push-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h2 class="panel-title">All Test Cases' results Pie Chart</h2>
+                            <h2 class="panel-title">All Test Cases' results Donut Chart</h2>
                         </div>
                         <div class="panel-body">
-                          <div id="latest_donutchart" ></div>
+                          <div id="donutchart" ></div>
                         </div>
                     </div>
                     <!-- /.panel -->
