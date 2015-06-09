@@ -1,0 +1,30 @@
+From d583c9ff9176cfb9e4939c0cdc7794ca650c6fb0 Mon Sep 17 00:00:00 2001
+From: Vlad Fulgeanu <full.vladd@gmail.com>
+Date: Tue, 9 Jun 2015 12:05:01 +0300
+Subject: [PATCH] Legend in bar chard should not be a link
+
+---
+ charts/templates/charts/index.html | 2 +-
+ file.patch                         | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ create mode 100644 file.patch
+
+diff --git a/charts/templates/charts/index.html b/charts/templates/charts/index.html
+index 9b256ef..c858950 100644
+--- a/charts/templates/charts/index.html
++++ b/charts/templates/charts/index.html
+@@ -46,7 +46,7 @@
+ 
+         function selectHandler() {
+           var selectedItem = chart.getSelection()[0];
+-          if (selectedItem) {
++          if (selectedItem != null && selectedItem.row != null && selectedItem != null) {
+             var newlink = {% url 'charts:base_testreport' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
+             window.location.href = newlink;
+           }
+diff --git a/file.patch b/file.patch
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.1.0
+

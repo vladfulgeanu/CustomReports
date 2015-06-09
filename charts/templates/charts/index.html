@@ -46,7 +46,7 @@
 
         function selectHandler() {
           var selectedItem = chart.getSelection()[0];
-          if (selectedItem) {
+          if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
             var newlink = {% url 'charts:base_testreport' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
             window.location.href = newlink;
           }
