@@ -341,8 +341,8 @@ class ToasterTable(View):
                     5 : self.parser.passed.__str__(),
                     6 : "<span class='text-success'>" + self.parser.failed.__str__() + "</span>" if self.parser.failed == 0
                         else "<span class='text-danger'>" + self.parser.failed.__str__() + "</span>",
-                    7 : ((self.parser.passed / float(self.parser.total)) * 100).__str__() + "%",
-                    8 : ((self.parser.passed / float(self.parser.run)) * 100).__str__() + "%"
+                    7 : ("%.2f" % ((self.parser.passed / float(self.parser.total)) * 100)).rstrip('0').rstrip('.') + "%",
+                    8 : ("%.2f" % ((self.parser.passed / float(self.parser.run)) * 100)).rstrip('0').rstrip('.') + "%"
                 }
 
                 data['rows'].append(required_data)

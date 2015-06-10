@@ -108,10 +108,10 @@ class TestRun(models.Model):
 		return failed
 
 	def get_abs_passed_percentage(self):
-		return (self.get_passed() / float(self.get_total())) * 100
+		return ("%.2f" % ((self.get_passed() / float(self.get_total())) * 100)).rstrip('0').rstrip('.')
 
 	def get_relative_passed_percentage(self):
-		return (self.get_passed() / float(self.get_run())) * 100
+		return ("%.2f" % ((self.get_passed() / float(self.get_run())) * 100)).rstrip('0').rstrip('.')
 
 	def __str__(self):
 		return self.testrun_id + " " + self.test_type + " " + self.release
