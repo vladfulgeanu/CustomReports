@@ -31,6 +31,7 @@ from django.template import Context, Template
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import FieldError
 from django.conf.urls import url, patterns
+from HTMLParser import HTMLParser
 
 import urls
 import types
@@ -39,7 +40,7 @@ import collections
 import operator
 
 class ToasterTable(View):
-    def __init__(self):
+    def __init__(self, last_line=False):
         self.title = None
         self.queryset = None
         self.columns = []
@@ -49,7 +50,32 @@ class ToasterTable(View):
         self.filter_actions = {}
         self.empty_state = "Sorry - no data found"
         self.default_orderby = ""
-        self.total = 0
+        if last_line:
+            self.last_line = True
+
+            class MyHTMLParser(HTMLParser):
+                def __init__(self):
+                    HTMLParser.__init__(self)
+                    self.total = self.run = self.passed = self.failed = 0
+                    self.current = None
+
+                def handle_starttag(self, tag, attrs):
+                    if tag == 'span':
+                        for name, value in attrs:
+                            if name == 'id':
+                                self.current = value
+
+                def handle_data(self, data):
+                    if self.current == 'total':
+                        self.total += int(data)
+                    if self.current == 'run':
+                        self.run += int(data)
+                    if self.current == 'passed':
+                        self.passed += int(data)
+                    if self.current == 'failed':
+                        self.failed += int(data)
+
+            self.parser = MyHTMLParser()
 
     def get(self, request, *args, **kwargs):
         self.setup_queryset(*args, **kwargs)
@@ -196,12 +222,7 @@ class ToasterTable(View):
     def apply_orderby(self, orderby):
         # Note that django will execute this when we try to retrieve the data
         # if not hasattr(self.queryset.model, orderby):
-        #     print "fdafA FOST??SF??A"
-        #     print isinstance(self.queryset, list)
-        #     print "A FOST??SF??A"
         #     self.queryset = sorted(self.queryset, key=lambda x: x.get_passed_percentage())
-        #     print isinstance(self.queryset, list)
-        #     print "2fasfA FOST??SF??A"
         # else:
 
 
@@ -289,6 +310,10 @@ class ToasterTable(View):
                     if "static_data_name" in col and col['static_data_name']:
                         required_data[col['static_data_name']] = self.render_static_data(col['static_data_template'], row)
 
+                        if self.last_line:
+                            if col['static_data_name'] in ['total', 'run', 'passed', 'failed']:
+                                self.parser.feed(required_data[col['static_data_name']].__str__())
+
                         # Overwrite the field_name with static_data_name
                         # so that this can be used as the html class name
 
@@ -307,23 +332,20 @@ class ToasterTable(View):
 
                 data['rows'].append(required_data)
 
-            print data['rows'][-1]
+            if self.last_line:
+                required_data = {
+                    1 : "<strong>Total</strong>",
+                    2 : '',
+                    3 : self.parser.total.__str__(),
+                    4 : self.parser.run.__str__(),
+                    5 : self.parser.passed.__str__(),
+                    6 : "<span class='text-success'>" + self.parser.failed.__str__() + "</span>" if self.parser.failed == 0
+                        else "<span class='text-danger'>" + self.parser.failed.__str__() + "</span>",
+                    7 : ((self.parser.passed / float(self.parser.total)) * 100).__str__() + "%",
+                    8 : ((self.parser.passed / float(self.parser.run)) * 100).__str__() + "%"
+                }
 
-
-            required_data = {}
-            required_data = {
-                1 : 'Total',
-                2 : '',
-                3 : 3,
-                4 : 4,
-                5 : 5,
-                6 : 6,
-            }
-            # for col in self.columns:
-            #     if "static_data_name" in col and col['static_data_name']=='total':
-            #         required_data[col['static_data_name']] = 2
-
-            data['rows'].append(required_data)
+                data['rows'].append(required_data)
 
         except FieldError:
             print "Error: Requested field does not exist"

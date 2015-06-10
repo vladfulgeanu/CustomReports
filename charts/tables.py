@@ -29,7 +29,7 @@ class TestReportTable(ToasterTable):
     """Table of layers in Toaster"""
 
     def __init__(self, *args, **kwargs):
-        ToasterTable.__init__(self)
+        ToasterTable.__init__(self, True)
         self.default_orderby = "target"
 
     def setup_queryset(self, *args, **kwargs):
@@ -69,11 +69,7 @@ class TestReportTable(ToasterTable):
                 static_data_name="plan_env",
                 static_data_template=custom_template)
 
-        total_template = '''\
-        {% with total=data.get_total %}\
-        <span>{{ total }}</span>\
-        {% endwith %}\
-        '''
+        total_template = "{% with total=data.get_total %}<span id='total'>{{ total }}</span>{% endwith %}"
 
         self.add_column(title="Total",
                 hideable=False,
@@ -82,11 +78,7 @@ class TestReportTable(ToasterTable):
                 static_data_template=total_template)
 
 
-        run_template = '''\
-        {% with run=data.get_run %}\
-        <span>{{ run }}</span>\
-        {% endwith %}\
-        '''
+        run_template = "{% with run=data.get_run %}<span id='run'>{{ run }}</span>{% endwith %}"
 
         self.add_column(title="Run",
                 hideable=False,
@@ -94,11 +86,7 @@ class TestReportTable(ToasterTable):
                 static_data_name="run",
                 static_data_template=run_template)
 
-        passed_template = '''\
-        {% with passed=data.get_passed %}\
-        <span>{{ passed }}</span>\
-        {% endwith %}\
-        '''
+        passed_template = "{% with passed=data.get_passed %}<span id='passed'>{{ passed }}</span>{% endwith %}"
 
         self.add_column(title="Passed",
                 hideable=False,
@@ -107,15 +95,7 @@ class TestReportTable(ToasterTable):
                 static_data_template=passed_template)
 
 
-        failed_template = '''\
-        {% with failed=data.get_failed %}\
-        {% if failed == 0 %}\
-            <span class="text-success">{{ failed }}</span>\
-        {% else %}\
-            <span class="text-danger">{{ failed }}</span>\
-        {% endif %}\
-        {% endwith %}\
-        '''
+        failed_template = '''{% with failed=data.get_failed %}{% if failed == 0 %}<span id='failed' class=\"text-success\">{{ failed }}</span>{% else %}<span id='failed' class=\"text-danger\">{{ failed }}</span>{% endif %}{% endwith %}'''
 
         self.add_column(title="Failed",
                 hideable=False,
