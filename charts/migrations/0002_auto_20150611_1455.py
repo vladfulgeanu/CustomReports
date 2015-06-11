@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='testrun',
-            old_name='y_version',
-            new_name='version',
+        migrations.AlterField(
+            model_name='testplan',
+            name='created',
+            field=models.DateTimeField(null=True, blank=True),
         ),
     ]

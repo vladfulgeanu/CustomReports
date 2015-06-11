@@ -11,27 +11,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='TestCase',
-            fields=[
-                ('testcase_id', models.CharField(max_length=10, serialize=False, primary_key=True)),
-                ('summary', models.CharField(max_length=500)),
-                ('author', models.CharField(max_length=100)),
-                ('tester', models.CharField(max_length=100, blank=True)),
-                ('category', models.CharField(max_length=15)),
-                ('priority', models.CharField(max_length=15)),
-            ],
-        ),
-        migrations.CreateModel(
             name='TestCaseResult',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('result', models.CharField(max_length=4, choices=[(b'pass', b'pass'), (b'fail', b'fail')])),
+                ('testcase_id', models.CharField(max_length=10, serialize=False, primary_key=True)),
+                ('result', models.CharField(max_length=4, choices=[(b'pass', b'pass'), (b'fail', b'fail'), (b'blocked', b'blocked'), (b'idle', b'idle')])),
                 ('message', models.CharField(max_length=30000, blank=True)),
                 ('started_on', models.DateTimeField(blank=True)),
                 ('finished_on', models.DateTimeField(blank=True)),
                 ('attachments', models.CharField(max_length=1000, blank=True)),
                 ('comments', models.CharField(max_length=1000, blank=True)),
-                ('testcase', models.ForeignKey(to='charts.TestCase')),
             ],
         ),
         migrations.CreateModel(
@@ -41,10 +29,10 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30)),
                 ('product', models.CharField(max_length=30)),
                 ('product_version', models.CharField(max_length=10)),
-                ('created', models.DateTimeField()),
-                ('author', models.CharField(max_length=100)),
+                ('created', models.DateTimeField(blank=True)),
+                ('author', models.CharField(max_length=100, blank=True)),
                 ('version', models.CharField(max_length=10, blank=True)),
-                ('plan_type', models.CharField(max_length=30)),
+                ('plan_type', models.CharField(max_length=30, blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -58,7 +46,7 @@ class Migration(migrations.Migration):
             name='TestRun',
             fields=[
                 ('testrun_id', models.CharField(max_length=10, serialize=False, primary_key=True)),
-                ('y_version', models.CharField(max_length=10, blank=True)),
+                ('version', models.CharField(max_length=10, blank=True)),
                 ('release', models.CharField(max_length=30, blank=True)),
                 ('test_type', models.CharField(max_length=15, choices=[(b'Weekly', b'Weekly'), (b'Full Pass', b'Full Pass')])),
                 ('poky_commit', models.CharField(max_length=100)),
@@ -80,10 +68,5 @@ class Migration(migrations.Migration):
             model_name='testcaseresult',
             name='testrun',
             field=models.ForeignKey(to='charts.TestRun'),
-        ),
-        migrations.AddField(
-            model_name='testcase',
-            name='testplan',
-            field=models.ForeignKey(to='charts.TestPlan'),
         ),
     ]

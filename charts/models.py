@@ -5,10 +5,10 @@ class TestPlan(models.Model):
 	name = models.CharField(max_length=30)
 	product = models.CharField(max_length=30)
 	product_version = models.CharField(max_length=10)
-	created = models.DateTimeField()
-	author = models.CharField(max_length=100)
+	created = models.DateTimeField(null=True, blank=True)
+	author = models.CharField(max_length=100, blank=True)
 	version = models.CharField(max_length=10, blank=True)
-	plan_type = models.CharField(max_length=30)
+	plan_type = models.CharField(max_length=30, blank=True)
 
 	def __str__(self):
 		return self.name + " version: " + self.product_version
@@ -94,7 +94,7 @@ class TestCaseResult(models.Model):
 	comments = models.CharField(max_length=1000, blank=True)
 
 	def __str__(self):
-		return self.testcase.testcase_id + " " + self.result + "ed"
+		return self.testcase_id + " is " + self.result
 
 class TestReport(models.Model):
 	testreport_id = models.CharField(max_length=10, primary_key=True)
