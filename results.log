@@ -1,0 +1,109 @@
+13:35:14 - bitbake-worker - RESULTS - Testcase 205: PASSED
+13:36:44 - bitbake-worker - RESULTS - Testcase 206: PASSED
+13:41:26 - bitbake-worker - RESULTS - Testcase 207: PASSED
+13:41:27 - bitbake-worker - RESULTS - Testcase 211: PASSED
+13:41:27 - bitbake-worker - RESULTS - Testcase 234: PASSED
+13:41:27 - bitbake-worker - RESULTS - Testcase 215: FAILED
+13:41:27 - bitbake-worker - RESULTS - Testcase 215:
+Traceback (most recent call last):
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/utils/decorators.py", line 100, in wrapped_f
+    return func(*args)
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/utils/decorators.py", line 88, in wrapped_f
+    return f(*args)
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/runtime/dmesg.py", line 12, in test_dmesg
+    self.assertEqual(status, 1, msg = "Error messages in dmesg log: %s" % output)
+AssertionError: 0 != 1 : Error messages in dmesg log: [    0.270279] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20141107/dsfield-211)
+[    0.270296] ACPI Error: Method parse/execution failed [\_SB_.PCI0._OSC] (Node f68890d8), AE_ALREADY_EXISTS (20141107/psparse-536)
+
+13:41:28 - bitbake-worker - RESULTS - Testcase 203: PASSED
+13:41:29 - bitbake-worker - RESULTS - Testcase test_gpp2_compile: PASSED
+13:41:30 - bitbake-worker - RESULTS - Testcase 200: PASSED
+13:41:30 - bitbake-worker - RESULTS - Testcase 204: PASSED
+13:42:01 - bitbake-worker - RESULTS - Testcase 316: PASSED
+13:42:01 - bitbake-worker - RESULTS - Testcase 962: PASSED
+13:42:02 - bitbake-worker - RESULTS - Testcase 239: PASSED
+13:42:05 - bitbake-worker - RESULTS - Testcase 1059: FAILED
+13:42:05 - bitbake-worker - RESULTS - Testcase 1059:
+Traceback (most recent call last):
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/utils/decorators.py", line 100, in wrapped_f
+    return func(*args)
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/utils/decorators.py", line 88, in wrapped_f
+    return f(*args)
+  File "/work/weekly/runtime/genericx86/poky/meta/lib/oeqa/runtime/parselogs.py", line 206, in test_parselogs
+    self.assertEqual(errcount, 0, msg=self.msg)
+AssertionError: 6 != 0 : No ignore list found for this machine, using default
+No ignore list found for this machine, using default
+No ignore list found for this machine, using default
+Log: /tmp/dmesg_output.log
+-----------------------
+Central error: [    0.291705] pci 0000:00:1d.7: can't claim BAR 0 [mem 0xf0504000-0xf05043ff]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+Central error: [    0.291725] pci 0000:00:1f.2: can't claim BAR 5 [mem 0xf0504400-0xf05047ff]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+Central error: [    0.291741] pci 0000:00:1b.0: can't claim BAR 0 [mem 0xf0500000-0xf0503fff 64bit]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+Log: /var/log/dmesg
+-----------------------
+Central error: [    0.291705] pci 0000:00:1d.7: can't claim BAR 0 [mem 0xf0504000-0xf05043ff]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+Central error: [    0.291725] pci 0000:00:1f.2: can't claim BAR 5 [mem 0xf0504400-0xf05047ff]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+Central error: [    0.291741] pci 0000:00:1b.0: can't claim BAR 0 [mem 0xf0500000-0xf0503fff 64bit]: address conflict with PCI Bus 0000:05 [mem 0xf0500000-0xf05fffff 64bit pref]
+***********************
+
+***********************
+6 errors found in logs.
+
+13:42:06 - bitbake-worker - RESULTS - Testcase test_perl_exists: PASSED
+13:42:06 - bitbake-worker - RESULTS - Testcase 208: PASSED
+13:42:06 - bitbake-worker - RESULTS - Testcase 964: PASSED
+13:42:06 - bitbake-worker - RESULTS - Testcase test_python_exists: PASSED
+13:42:07 - bitbake-worker - RESULTS - Testcase 965: PASSED
+13:42:07 - bitbake-worker - RESULTS - Testcase test_python_testfile: PASSED
+13:42:08 - bitbake-worker - RESULTS - Testcase 960: PASSED
+13:42:08 - bitbake-worker - RESULTS - Testcase 191: PASSED
+13:42:12 - bitbake-worker - RESULTS - Testcase 192: PASSED
+13:42:15 - bitbake-worker - RESULTS - Testcase 1096: PASSED
+13:42:17 - bitbake-worker - RESULTS - Testcase 194: PASSED
+13:42:18 - bitbake-worker - RESULTS - Testcase 220: PASSED
+13:42:18 - bitbake-worker - RESULTS - Testcase 716: PASSED
+13:42:24 - bitbake-worker - RESULTS - Testcase 721: PASSED
+13:42:26 - bitbake-worker - RESULTS - Testcase 421: PASSED
+13:42:30 - bitbake-worker - RESULTS - Testcase 720: PASSED
+13:42:31 - bitbake-worker - RESULTS - Testcase 722: PASSED
+13:42:31 - bitbake-worker - RESULTS - Testcase 968: PASSED
+13:42:35 - bitbake-worker - RESULTS - Testcase 718: PASSED
+13:42:35 - bitbake-worker - RESULTS - Testcase test_smart_channel: PASSED
+13:42:50 - bitbake-worker - RESULTS - Testcase 719: PASSED
+13:42:51 - bitbake-worker - RESULTS - Testcase 969: PASSED
+13:42:51 - bitbake-worker - RESULTS - Testcase 970: PASSED
+13:42:53 - bitbake-worker - RESULTS - Testcase 717: PASSED
+13:42:53 - bitbake-worker - RESULTS - Testcase 971: PASSED
+13:43:09 - bitbake-worker - RESULTS - Testcase test_smart_install: PASSED
+13:43:31 - bitbake-worker - RESULTS - Testcase 728: PASSED
+13:43:53 - bitbake-worker - RESULTS - Testcase 723: PASSED
+13:44:16 - bitbake-worker - RESULTS - Testcase 725: PASSED
+13:44:32 - bitbake-worker - RESULTS - Testcase 726: PASSED
+13:44:37 - bitbake-worker - RESULTS - Testcase 729: PASSED
+13:44:54 - bitbake-worker - RESULTS - Testcase 727: PASSED
+13:45:15 - bitbake-worker - RESULTS - Testcase 731: PASSED
+13:45:17 - bitbake-worker - RESULTS - Testcase 224: PASSED
+13:45:19 - bitbake-worker - RESULTS - Testcase 213: PASSED
+13:45:19 - bitbake-worker - RESULTS - Testcase test_connmand_help: PASSED
+13:45:19 - bitbake-worker - RESULTS - Testcase 221: PASSED
+13:45:19 - bitbake-worker - RESULTS - Testcase test_syslog_help: PASSED
+13:45:20 - bitbake-worker - RESULTS - Testcase 201: PASSED
+13:45:20 - bitbake-worker - RESULTS - Testcase test_syslog_logger: PASSED
+13:45:20 - bitbake-worker - RESULTS - Testcase test_syslog_restart: PASSED
+13:45:21 - bitbake-worker - RESULTS - Testcase 202: PASSED
+13:45:21 - bitbake-worker - RESULTS - Testcase test_xorg_running: PASSED
