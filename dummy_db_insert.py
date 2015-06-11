@@ -10,7 +10,7 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "customreports.settings"
 django.setup()
 
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "customreports.settings")
-from charts.models import TestPlanForm, TestRunForm, TestCaseForm, TestCaseResultForm, TestReportForm
+from charts.models import TestPlanForm, TestRunForm, TestCaseResultForm, TestReportForm
 
 testreport = {
 	'filters' : '{"release" : "1.7.2_rc3"}',
@@ -364,57 +364,15 @@ else:
 
 
 #################################
-
-testcase1 = {
-	"testcase_id" : "215",
-	"summary" : "do important thinggy",
-	"author" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
-	"tester" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
-	"category" : "Weekly",
-	"priority" : "High"
-}
-
-testcase2 = {
-	"testcase_id" : "285",
-	"summary" : "do other thinggy then do that",
-	"author" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
-	"tester" : "Stoicescu Cornel <corneliux.stoicescu@intel.com>",
-	"category" : "Weekly",
-	"priority" : "Medium"
-}
-
-testcase_form1 = TestCaseForm(data=testcase1)
-
-if testcase_form1.is_valid():
-	testcase_obj1 = testcase_form1.save(commit=False)
-	testcase_obj1.testplan = testplan_obj
-	testcase_obj1.save()
-	print "TC1 saved"
-
-else:
-	print 'Error: TestCase1 json is not valid'
-	sys.exit(1)
-
-testcase_form2 = TestCaseForm(data=testcase2)
-
-if testcase_form2.is_valid():
-	testcase_obj2 = testcase_form2.save(commit=False)
-	testcase_obj2.testplan = testplan_obj
-	testcase_obj2.save()
-	print "TC2 saved"
-
-else:
-	print 'Error: TestCase2 json is not valid'
-	sys.exit(1)
-
-##############################
 testcaseresult1 = {
+	"testcase_id" : "215",
 	"result" : "fail",
 	"started_on" : "2015-05-17 11:39:23",
 	"finished_on" : "2015-05-17 11:54:23"
 }
 
 testcaseresult2 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-05 11:23:23",
 	"finished_on" : "2015-05-05 11:24:23"
@@ -425,7 +383,6 @@ testcaseres_form1 = TestCaseResultForm(data=testcaseresult1)
 
 if testcaseres_form1.is_valid():
 	testcaseres_obj1 = testcaseres_form1.save(commit=False)
-	testcaseres_obj1.testcase = testcase_obj1
 	testcaseres_obj1.testrun = testrun_obj
 	testcaseres_obj1.save()
 	print 'TCR1 saved'
@@ -438,7 +395,6 @@ testcaseres_form2 = TestCaseResultForm(data=testcaseresult2)
 
 if testcaseres_form2.is_valid():
 	testcaseres_obj2 = testcaseres_form2.save(commit=False)
-	testcaseres_obj2.testcase = testcase_obj2
 	testcaseres_obj2.testrun = testrun_obj
 	testcaseres_obj2.save()
 	print 'TCR2 saved'
@@ -449,12 +405,14 @@ else:
 
 
 testcaseresult3 = {
+	"testcase_id" : "215",
 	"result" : "fail",
 	"started_on" : "2015-05-18 11:39:23",
 	"finished_on" : "2015-05-18 11:54:23"
 }
 
 testcaseresult4 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-15 11:23:23",
 	"finished_on" : "2015-05-15 11:24:23"
@@ -465,7 +423,6 @@ testcaseres_form3 = TestCaseResultForm(data=testcaseresult3)
 
 if testcaseres_form3.is_valid():
 	testcaseres_obj3 = testcaseres_form3.save(commit=False)
-	testcaseres_obj3.testcase = testcase_obj1
 	testcaseres_obj3.testrun = testrun_obj2
 	testcaseres_obj3.save()
 	print 'TCR3 saved'
@@ -478,7 +435,6 @@ testcaseres_form4 = TestCaseResultForm(data=testcaseresult4)
 
 if testcaseres_form4.is_valid():
 	testcaseres_obj4 = testcaseres_form4.save(commit=False)
-	testcaseres_obj4.testcase = testcase_obj2
 	testcaseres_obj4.testrun = testrun_obj2
 	testcaseres_obj4.save()
 	print 'TCR4 saved'
@@ -488,12 +444,14 @@ else:
 	sys.exit(1)
 
 testcaseresult5 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-05-21 11:39:23",
 	"finished_on" : "2015-05-21 11:54:23"
 }
 
 testcaseresult6 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-25 11:23:23",
 	"finished_on" : "2015-05-25 11:24:23"
@@ -504,7 +462,6 @@ testcaseres_form5 = TestCaseResultForm(data=testcaseresult5)
 
 if testcaseres_form5.is_valid():
 	testcaseres_obj5 = testcaseres_form5.save(commit=False)
-	testcaseres_obj5.testcase = testcase_obj1
 	testcaseres_obj5.testrun = testrun_obj3
 	testcaseres_obj5.save()
 	print 'TCR5 saved'
@@ -517,7 +474,6 @@ testcaseres_form6 = TestCaseResultForm(data=testcaseresult6)
 
 if testcaseres_form6.is_valid():
 	testcaseres_obj6 = testcaseres_form6.save(commit=False)
-	testcaseres_obj6.testcase = testcase_obj2
 	testcaseres_obj6.testrun = testrun_obj3
 	testcaseres_obj6.save()
 	print 'TCR6 saved'
@@ -529,12 +485,14 @@ else:
 
 ##############################
 testcaseresult7 = {
+	"testcase_id" : "215",
 	"result" : "fail",
 	"started_on" : "2015-05-26 11:39:23",
 	"finished_on" : "2015-05-26 11:54:23"
 }
 
 testcaseresult8 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-26 11:23:23",
 	"finished_on" : "2015-05-26 11:24:23"
@@ -545,7 +503,6 @@ testcaseres_form7 = TestCaseResultForm(data=testcaseresult7)
 
 if testcaseres_form7.is_valid():
 	testcaseres_obj7 = testcaseres_form7.save(commit=False)
-	testcaseres_obj7.testcase = testcase_obj1
 	testcaseres_obj7.testrun = testrun_obj4
 	testcaseres_obj7.save()
 	print 'TCR7 saved'
@@ -558,7 +515,6 @@ testcaseres_form8 = TestCaseResultForm(data=testcaseresult8)
 
 if testcaseres_form8.is_valid():
 	testcaseres_obj8 = testcaseres_form8.save(commit=False)
-	testcaseres_obj8.testcase = testcase_obj2
 	testcaseres_obj8.testrun = testrun_obj4
 	testcaseres_obj8.save()
 	print 'TCR8 saved'
@@ -569,12 +525,14 @@ else:
 
 
 testcaseresult9 = {
+	"testcase_id" : "215",
 	"result" : "fail",
 	"started_on" : "2015-05-26 11:39:23",
 	"finished_on" : "2015-05-26 11:54:23"
 }
 
 testcaseresult10 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-26 11:23:23",
 	"finished_on" : "2015-05-26 11:24:23"
@@ -585,7 +543,6 @@ testcaseres_form9 = TestCaseResultForm(data=testcaseresult9)
 
 if testcaseres_form9.is_valid():
 	testcaseres_obj9 = testcaseres_form9.save(commit=False)
-	testcaseres_obj9.testcase = testcase_obj1
 	testcaseres_obj9.testrun = testrun_obj5
 	testcaseres_obj9.save()
 	print 'TCR9 saved'
@@ -598,7 +555,6 @@ testcaseres_form10 = TestCaseResultForm(data=testcaseresult10)
 
 if testcaseres_form10.is_valid():
 	testcaseres_obj10 = testcaseres_form10.save(commit=False)
-	testcaseres_obj10.testcase = testcase_obj2
 	testcaseres_obj10.testrun = testrun_obj5
 	testcaseres_obj10.save()
 	print 'TCR10 saved'
@@ -608,12 +564,14 @@ else:
 	sys.exit(1)
 
 testcaseresult11 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-05-26 11:39:23",
 	"finished_on" : "2015-05-26 11:54:23"
 }
 
 testcaseresult12 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-05-26 11:23:23",
 	"finished_on" : "2015-05-26 11:24:23"
@@ -624,7 +582,6 @@ testcaseres_form11 = TestCaseResultForm(data=testcaseresult11)
 
 if testcaseres_form11.is_valid():
 	testcaseres_obj11 = testcaseres_form11.save(commit=False)
-	testcaseres_obj11.testcase = testcase_obj1
 	testcaseres_obj11.testrun = testrun_obj6
 	testcaseres_obj11.save()
 	print 'TCR11 saved'
@@ -637,7 +594,6 @@ testcaseres_form12 = TestCaseResultForm(data=testcaseresult12)
 
 if testcaseres_form12.is_valid():
 	testcaseres_obj12 = testcaseres_form12.save(commit=False)
-	testcaseres_obj12.testcase = testcase_obj2
 	testcaseres_obj12.testrun = testrun_obj6
 	testcaseres_obj12.save()
 	print 'TCR12 saved'
@@ -649,12 +605,14 @@ else:
 
 ##############################
 testcaseresult13 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-04-26 11:39:23",
 	"finished_on" : "2015-04-26 11:54:23"
 }
 
 testcaseresult14 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-04-26 11:23:23",
 	"finished_on" : "2015-04-26 11:24:23"
@@ -665,7 +623,6 @@ testcaseres_form13 = TestCaseResultForm(data=testcaseresult13)
 
 if testcaseres_form13.is_valid():
 	testcaseres_obj13 = testcaseres_form13.save(commit=False)
-	testcaseres_obj13.testcase = testcase_obj1
 	testcaseres_obj13.testrun = testrun_obj7
 	testcaseres_obj13.save()
 	print 'TCR13 saved'
@@ -678,7 +635,6 @@ testcaseres_form14 = TestCaseResultForm(data=testcaseresult14)
 
 if testcaseres_form14.is_valid():
 	testcaseres_obj14 = testcaseres_form14.save(commit=False)
-	testcaseres_obj14.testcase = testcase_obj2
 	testcaseres_obj14.testrun = testrun_obj7
 	testcaseres_obj14.save()
 	print 'TCR14 saved'
@@ -689,12 +645,14 @@ else:
 
 
 testcaseresult15 = {
+	"testcase_id" : "215",
 	"result" : "fail",
 	"started_on" : "2015-04-26 11:39:23",
 	"finished_on" : "2015-04-26 11:54:23"
 }
 
 testcaseresult16 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-04-26 11:23:23",
 	"finished_on" : "2015-04-26 11:24:23"
@@ -705,7 +663,6 @@ testcaseres_form15 = TestCaseResultForm(data=testcaseresult15)
 
 if testcaseres_form15.is_valid():
 	testcaseres_obj9 = testcaseres_form15.save(commit=False)
-	testcaseres_obj9.testcase = testcase_obj1
 	testcaseres_obj9.testrun = testrun_obj8
 	testcaseres_obj9.save()
 	print 'TCR15 saved'
@@ -718,7 +675,6 @@ testcaseres_form16 = TestCaseResultForm(data=testcaseresult16)
 
 if testcaseres_form16.is_valid():
 	testcaseres_obj16 = testcaseres_form16.save(commit=False)
-	testcaseres_obj16.testcase = testcase_obj2
 	testcaseres_obj16.testrun = testrun_obj8
 	testcaseres_obj16.save()
 	print 'TCR16 saved'
@@ -728,12 +684,14 @@ else:
 	sys.exit(1)
 
 testcaseresult17 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-04-26 11:39:23",
 	"finished_on" : "2015-04-26 11:54:23"
 }
 
 testcaseresult18 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-04-26 11:23:23",
 	"finished_on" : "2015-04-26 11:24:23"
@@ -744,7 +702,6 @@ testcaseres_form17 = TestCaseResultForm(data=testcaseresult17)
 
 if testcaseres_form17.is_valid():
 	testcaseres_obj17 = testcaseres_form17.save(commit=False)
-	testcaseres_obj17.testcase = testcase_obj1
 	testcaseres_obj17.testrun = testrun_obj9
 	testcaseres_obj17.save()
 	print 'TCR17 saved'
@@ -757,7 +714,6 @@ testcaseres_form18 = TestCaseResultForm(data=testcaseresult18)
 
 if testcaseres_form18.is_valid():
 	testcaseres_obj18 = testcaseres_form18.save(commit=False)
-	testcaseres_obj18.testcase = testcase_obj2
 	testcaseres_obj18.testrun = testrun_obj9
 	testcaseres_obj18.save()
 	print 'TCR18 saved'
@@ -767,12 +723,14 @@ else:
 	sys.exit(1)
 ##############################
 testcaseresult19 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-06-10 11:39:23",
 	"finished_on" : "2015-06-10 11:54:23"
 }
 
 testcaseresult20 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-06-10 11:23:23",
 	"finished_on" : "2015-06-10 11:24:23"
@@ -783,7 +741,6 @@ testcaseres_form19 = TestCaseResultForm(data=testcaseresult19)
 
 if testcaseres_form19.is_valid():
 	testcaseres_obj19 = testcaseres_form19.save(commit=False)
-	testcaseres_obj19.testcase = testcase_obj1
 	testcaseres_obj19.testrun = testrun_obj10
 	testcaseres_obj19.save()
 	print 'TCR19 saved'
@@ -796,7 +753,6 @@ testcaseres_form20 = TestCaseResultForm(data=testcaseresult20)
 
 if testcaseres_form20.is_valid():
 	testcaseres_obj20 = testcaseres_form20.save(commit=False)
-	testcaseres_obj20.testcase = testcase_obj2
 	testcaseres_obj20.testrun = testrun_obj10
 	testcaseres_obj20.save()
 	print 'TCR20 saved'
@@ -807,12 +763,14 @@ else:
 
 
 testcaseresult21 = {
+	"testcase_id" : "215",
 	"result" : "pass",
 	"started_on" : "2015-04-27 11:39:23",
 	"finished_on" : "2015-04-27 11:54:23"
 }
 
 testcaseresult22 = {
+	"testcase_id" : "216",
 	"result" : "pass",
 	"started_on" : "2015-04-27 11:23:23",
 	"finished_on" : "2015-04-27 11:24:23"
@@ -823,7 +781,6 @@ testcaseres_form21 = TestCaseResultForm(data=testcaseresult21)
 
 if testcaseres_form21.is_valid():
 	testcaseres_obj21 = testcaseres_form21.save(commit=False)
-	testcaseres_obj21.testcase = testcase_obj1
 	testcaseres_obj21.testrun = testrun_obj11
 	testcaseres_obj21.save()
 	print 'TCR21 saved'
@@ -836,7 +793,6 @@ testcaseres_form22 = TestCaseResultForm(data=testcaseresult22)
 
 if testcaseres_form22.is_valid():
 	testcaseres_obj22 = testcaseres_form22.save(commit=False)
-	testcaseres_obj22.testcase = testcase_obj2
 	testcaseres_obj22.testrun = testrun_obj11
 	testcaseres_obj22.save()
 	print 'TCR22 saved'

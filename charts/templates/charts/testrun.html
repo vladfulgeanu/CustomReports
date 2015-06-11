@@ -64,9 +64,8 @@
                                 {% for testcaseresult in testcaseresults %}
                                     <li style="font-size:20px;">
                                         Test case
-                                        {% url 'charts:base_testcase' as base %}
-                                        {% with base|add:testcaseresult.testcase.testcase_id as link %}
-                                        <a href="{{ link }}">{{ testcaseresult.testcase.testcase_id }}</a>
+                                        {% with "https://bugzilla.yoctoproject.org/tr_show_case.cgi?case_id="|add:testcaseresult.testcase_id as link %}
+                                        <a href="{{ link }}" target="_blank">{{ testcaseresult.testcase_id }}</a>
                                         {% endwith %}
                                         {% if testcaseresult.result == 'fail' %}
                                             <span class="text-danger">{{ testcaseresult.result }}ed</span>:

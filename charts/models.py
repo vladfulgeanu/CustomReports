@@ -75,19 +75,6 @@ class TestRun(models.Model):
 	def __str__(self):
 		return self.testrun_id + " " + self.test_type + " " + self.release
 
-class TestCase(models.Model):
-	testcase_id = models.CharField(max_length=10, primary_key=True)
-	testplan = models.ForeignKey(TestPlan)
-
-	summary = models.CharField(max_length=500)
-	author = models.CharField(max_length=100)
-	tester = models.CharField(max_length=100, blank=True)
-	category = models.CharField(max_length=15)
-	priority = models.CharField(max_length=15)
-
-	def __str__(self):
-		return self.testcase_id
-
 class TestCaseResult(models.Model):
 	RESULT_CHOICES = (
 		('pass', 'pass'),
@@ -96,7 +83,7 @@ class TestCaseResult(models.Model):
 		('idle', 'idle')
 	)
 
-	testcase = models.ForeignKey(TestCase)
+	testcase_id = models.CharField(max_length=10, primary_key=True)
 	testrun = models.ForeignKey(TestRun)
 
 	result = models.CharField(max_length=4, choices=RESULT_CHOICES)
@@ -128,16 +115,10 @@ class TestRunForm(ModelForm):
 		fields = ['testrun_id', 'version', 'release', 'test_type', 'poky_commit', 'poky_branch', 'date', 'target', 'image_type', 'hw_arch', 
 		'hw', 'host_os', 'other_layers_commits', 'ab_image_repo', 'services_running', 'package_versions_installed']
 
-class TestCaseForm(ModelForm):
-	class Meta:
-		model = TestCase
-		fields = ['testcase_id', 'summary', 'author', 'tester', 'category', 'priority']
-
-
 class TestCaseResultForm(ModelForm):
 	class Meta:
 		model = TestCaseResult
-		fields = ['result', 'message', 'started_on', 'finished_on', 'attachments', 'comments']
+		fields = ['testcase_id', 'result', 'message', 'started_on', 'finished_on', 'attachments', 'comments']
 
 class TestReportForm(ModelForm):
 	class Meta:

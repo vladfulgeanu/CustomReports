@@ -6,7 +6,7 @@ from django.db.models import Q
 from django import forms
 import json, collections
 
-from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
+from .models import TestPlan, TestRun, TestCaseResult, TestReport
 from . import tables
 
 # Template filter to get the value given its coresponding key in a dictionary
@@ -107,14 +107,6 @@ def testrun(request, id):
 			'passed'      : passed,
 			'failed'      : testrun.testcaseresult_set.count() - passed,
 			'testcaseresults' : testcaseresults
-		})
-
-def testcase(request, id):
-
-	testcase = get_object_or_404(TestCase, pk = id)
-
-	return render (request, 'charts/testcase.html', {
-			'testcase'    : testcase
 		})
 
 def testreport(request, release):
