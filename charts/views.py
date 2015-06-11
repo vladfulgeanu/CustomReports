@@ -9,6 +9,7 @@ import json, collections
 from .models import TestPlan, TestRun, TestCase, TestCaseResult, TestReport
 from . import tables
 
+# Template filter to get the value given its coresponding key in a dictionary
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
@@ -18,7 +19,7 @@ class ModelChoiceField(forms.ModelChoiceField):
 		return obj.release[:3]
 
 class ReleaseForm(forms.Form):
-	versions = ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), empty_label="Select version", to_field_name="version")
+	versions = ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), to_field_name="version")
 
 def index(request, version=None):
 
