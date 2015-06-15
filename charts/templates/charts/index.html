@@ -9,15 +9,15 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
 
-        var mydata = new google.visualization.DataTable();
+        var data = new google.visualization.DataTable();
 
-        mydata.addColumn('string', 'Release');
-        mydata.addColumn('number', 'Passed');
-        mydata.addColumn('number', 'Failed');
+        data.addColumn('string', 'Release');
+        data.addColumn('number', 'Passed');
+        data.addColumn('number', 'Failed');
 
         var ids = {};
         {% for release, obj in testruns.items %}
-            mydata.addRow(
+            data.addRow(
               ['{{ release }}',
                {{ obj.passed }},
                {{ obj.failed }}
@@ -53,7 +53,7 @@
         }
         google.visualization.events.addListener(chart, 'select', selectHandler);
 
-        chart.draw(mydata, google.charts.Bar.convertOptions(options));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
       }
 
       $(window).resize(function() {

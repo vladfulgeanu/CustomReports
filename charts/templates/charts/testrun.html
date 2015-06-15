@@ -67,12 +67,12 @@
                                         {% with "https://bugzilla.yoctoproject.org/tr_show_case.cgi?case_id="|add:testcaseresult.testcase_id as link %}
                                         <a href="{{ link }}" target="_blank">{{ testcaseresult.testcase_id }}</a>
                                         {% endwith %}
-                                        {% if testcaseresult.result == 'fail' %}
-                                            <span class="text-danger">{{ testcaseresult.result }}ed</span>:
+                                        {% if testcaseresult.result == 'failed' %}
+                                            <span class="text-danger">{{ testcaseresult.result }}</span>:
                                             <br />
                                             <pre>{{ testcaseresult.message }}</pre>
-                                        {% elif testcaseresult.result == 'pass' %}
-                                            <span class="text-success">{{ testcaseresult.result }}ed</span>
+                                        {% elif testcaseresult.result == 'passed' %}
+                                            <span class="text-success">{{ testcaseresult.result }}</span>
                                         {% else %}
                                             <span >is {{ testcaseresult.result }}</span>
                                         {% endif %}

@@ -19,7 +19,6 @@ class TestRun(models.Model):
 		('Weekly', 'Weekly'),
 		('Full Pass', 'Full Pass')
 	)
-	testrun_id = models.CharField(max_length=10, primary_key=True)
 	testplan = models.ForeignKey(TestPlan, verbose_name="the related Test Plan")
 
 	version = models.CharField(max_length=10, blank=True)
@@ -27,7 +26,8 @@ class TestRun(models.Model):
 	test_type = models.CharField(max_length=15, choices=TYPE_CHOICES)
 	poky_commit = models.CharField(max_length=100)
 	poky_branch = models.CharField(max_length=15)
-	date = models.DateTimeField()
+	start_date = models.DateTimeField()
+	stop_date = models.DateTimeField(null=True, blank=True)
 
 	target = models.CharField(max_length=30, blank=True)
 	image_type = models.CharField(max_length=30, blank=True)
@@ -57,13 +57,13 @@ class TestRun(models.Model):
 	def get_passed(self):
 		passed = 0
 		for testrun in self.get_for_plan_env():
-			passed += testrun.testcaseresult_set.filter(result='pass').count()
+			passed += testrun.testcaseresult_set.filter(result='passed').count()
 		return passed
 
 	def get_failed(self):
 		failed = 0
 		for testrun in self.get_for_plan_env():
-			failed += testrun.testcaseresult_set.filter(result='fail').count()
+			failed += testrun.testcaseresult_set.filter(result='failed').count()
 		return failed
 
 	def get_abs_passed_percentage(self):
@@ -73,23 +73,23 @@ class TestRun(models.Model):
 		return ("%.2f" % ((self.get_passed() / float(self.get_run())) * 100)).rstrip('0').rstrip('.')
 
 	def __str__(self):
-		return self.testrun_id + " " + self.test_type + " " + self.release
+		return self.id.__str__() + " " + self.test_type + " " + self.release
 
 class TestCaseResult(models.Model):
 	RESULT_CHOICES = (
-		('pass', 'pass'),
-		('fail', 'fail'),
+		('passed', 'passed'),
+		('failed', 'failed'),
 		('blocked', 'blocked'),
 		('idle', 'idle')
 	)
 
-	testcase_id = models.CharField(max_length=10, primary_key=True)
+	testcase_id = models.CharField(max_length=40)
 	testrun = models.ForeignKey(TestRun)
 
-	result = models.CharField(max_length=4, choices=RESULT_CHOICES)
+	result = models.CharField(max_length=7, choices=RESULT_CHOICES)
 	message = models.CharField(max_length=30000, blank=True)
-	started_on = models.DateTimeField(blank = True)
-	finished_on = models.DateTimeField(blank = True)
+	started_on = models.DateTimeField(null=True, blank = True)
+	finished_on = models.DateTimeField(null=True, blank = True)
 	attachments = models.CharField(max_length=1000, blank=True)
 	comments = models.CharField(max_length=1000, blank=True)
 
@@ -112,7 +112,7 @@ class TestPlanForm(ModelForm):
 class TestRunForm(ModelForm):
 	class Meta:
 		model = TestRun
-		fields = ['testrun_id', 'version', 'release', 'test_type', 'poky_commit', 'poky_branch', 'date', 'target', 'image_type', 'hw_arch', 
+		fields = ['version', 'release', 'test_type', 'poky_commit', 'poky_branch', 'start_date', 'stop_date', 'target', 'image_type', 'hw_arch', 
 		'hw', 'host_os', 'other_layers_commits', 'ab_image_repo', 'services_running', 'package_versions_installed']
 
 class TestCaseResultForm(ModelForm):

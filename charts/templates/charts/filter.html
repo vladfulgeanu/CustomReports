@@ -1,0 +1,139 @@
+{% extends "charts/base.html" %}
+
+{% block title %}Yocto QA Tests{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        {% if draw_chart %}
+            google.load('visualization', '1.1', {packages: ['corechart']});
+            google.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Date');
+                data.addColumn('number', 'Passes');
+                data.addColumn('number', 'Fails');
+
+                var ids = {};
+                {% for id, obj in results_dict.items %}
+                    data.addRow(
+                        ['{{ obj.date }}',
+                        {{ obj.passed }},
+                        {{ obj.failed }}
+                        ]);
+                    ids[{{ forloop.counter0 }}] = {{ id }};
+                {% endfor %}
+
+                var options = {
+                    title: "Results for: {{ query }}",
+                    theme: 'material',
+                    width: '100%',
+                    height: 500,
+                    pointSize: 4
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+
+                function selectHandler() {
+                    var selectedItem = chart.getSelection()[0];
+                    if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
+                        var newlink = {% url 'charts:base_testrun' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
+                        window.location.href = newlink;
+                    }
+                }
+                google.visualization.events.addListener(chart, 'select', selectHandler);
+
+
+                chart.draw(data, options);
+            }
+
+            $(window).resize(function() {
+                drawChart();
+            });
+        {% endif %}
+    </script>
+
+{% endblock scripts %}
+
+{% block body %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Make your custom filter</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form method="get" action="" class="form-inline">
+                            <div class="form-group">
+                                <select name="release" class="form-control">
+                                    <option value="" disabled selected>Release</option>
+                                    {% for release in release_form %}
+                                        <option value="{{ release }}">{{ release }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="testplan" class="form-control">
+                                    <option value="" disabled selected>Test Plan</option>
+                                    {% for plan in plan_form %}
+                                        <option value="{{ plan.id }}">{{ plan.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="test_type" class="form-control">
+                                    <option value="" disabled selected>Test type</option>
+                                    {% for type in type_form %}
+                                        <option value="{{ type }}">{{ type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="target" class="form-control ">
+                                    <option value="" disabled selected>Target</option>
+                                    {% for target in targets_form %}
+                                        <option value="{{ target }}">{{ target }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="image_type" class="form-control ">
+                                    <option value="" disabled selected>Image type</option>
+                                    {% for itype in itype_form %}
+                                        <option value="{{ itype }}">{{ itype }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="hw" class="form-control">
+                                    <option value="" disabled selected>Hardware</option>
+                                    {% for hw in hw_form %}
+                                        <option value="{{ hw }}">{{ hw }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </form>
+
+                        <div id="linechart"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+                
+            </div>
+            <!-- /.col-lg-8 -->
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+{% endblock body %}

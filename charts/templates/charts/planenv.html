@@ -29,14 +29,11 @@
             <div class="col-lg-8">
                 <ul id="collapse">
                     {% for testrun in testruns %}
-                        <li style="font-size:20px;">                                
-                            {% url 'charts:base_testrun' as base %}
-                            {% with base|add:testrun.testrun_id as link %}
-                            <a href="{{ link }}">{{ testrun.testrun_id }}</a>
-                            {% endwith %}
+                        <li style="font-size:20px;">
+                            <a href="{% url 'charts:testrun' testrun.id %}">{{ testrun.id }}</a>
                             has
 
-                            {% with failed|get_item:testrun.testrun_id as testrun_fails %}
+                            {% with failed|get_item:testrun.id as testrun_fails %}
                             {% if testrun_fails|length == 0 %}
                                 <span class="text-success"> {{ testrun_fails|length }} </span>
                             {% else %}
@@ -48,21 +45,18 @@
                             <br />
 
                             <ul>
-                            {% if testrun_fails|length == 0 %}
+                            {% for testcaseresult in testrun_fails %}
+                                <li>
+                                    {% with "https://bugzilla.yoctoproject.org/tr_show_case.cgi?case_id="|add:testcaseresult.testcase_id as link %}
+                                    <a href="{{ link }}" target="_blank">{{ testcaseresult.testcase_id }}</a>
+                                    {% endwith %}
+                                    <span class="text-danger">{{ testcaseresult.result }}</span>:
+                                    <br />
+                                    <pre>{{ testcaseresult.message }}</pre>
+                                </li>
+                            {% empty %}
                                 <li> No failed test cases </li>
-                            {% else %}
-                                {% for testcaseresult in testrun_fails %}
-                                    <li>
-                                        {% url 'charts:base_testcase' as base %}
-                                        {% with base|add:testcaseresult.testcase.testcase_id as link %}
-                                        <a href="{{ link }}">{{ testcaseresult.testcase.testcase_id }}</a>
-                                        {% endwith %}
-                                        <span class="text-danger">{{ testcaseresult.result }}ed</span>:
-                                        <br />
-                                        <pre>{{ testcaseresult.message }}</pre>
-                                    </li>
-                                {% endfor %}
-                            {% endif %}
+                            {% endfor %}
                             </ul>
                             {% endwith %}
 

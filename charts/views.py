@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django import forms
-import json, collections
+import json, collections, re
 
 from .models import TestPlan, TestRun, TestCaseResult, TestReport
 from . import tables
@@ -14,20 +14,29 @@ from . import tables
 def get_item(dictionary, key):
     return dictionary.get(key)
 
-class ModelChoiceField(forms.ModelChoiceField):
-	def label_from_instance(self, obj):
-		return obj.release[:3]
+# class ModelChoiceField(forms.ModelChoiceField):
+# 	def label_from_instance(self, obj):
+# 		return obj.release[:3]
 
 class ReleaseForm(forms.Form):
-	versions = ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), to_field_name="version")
+	versions = forms.ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), to_field_name='version')
+
+
+def search(request):
+
+	query_string = ''
+	if ('q' in request.GET) and request.GET['q'].strip():
+		query_string = request.GET['q']
+
+	return render(request, 'charts/search_results.html', {
+			'query_string': query_string,
+			'request' : request.GET.urlencode,
+			'table_name' : tables.SearchTable.__name__.lower()
+		})
 
 def index(request, version=None):
 
 	version_form = ReleaseForm()
-	# if request.method == 'POST':
-	# 	version_form = ReleaseForm(request.POST)
-	# 	if version_form.is_valid:
-	# 		return HttpResponseRedirect(reverse('charts:dashboard'))
 
 	start = True
 
@@ -45,8 +54,8 @@ def index(request, version=None):
 		passed = failed = 0
 		testruns_in_release = TestRun.objects.filter(release=uniq_release_testrun.release)
 		for testrun_in_release in testruns_in_release:
-			passed += testrun_in_release.testcaseresult_set.filter(result='pass').count()
-			failed += testrun_in_release.testcaseresult_set.filter(result='fail').count()
+			passed += testrun_in_release.testcaseresult_set.filter(result='passed').count()
+			failed += testrun_in_release.testcaseresult_set.filter(result='failed').count()
 
 		testruns[uniq_release_testrun.release.encode('ascii', 'ignore')] = {
 			'rc' : uniq_release_testrun.release[-3:],
@@ -60,7 +69,42 @@ def index(request, version=None):
 			'version' : latest_version,
 			'testruns' : collections.OrderedDict(sorted(testruns.items(), reverse=True))
 		})
-	
+
+def filter(request):
+
+	results = None
+	results_dict = {}
+	draw_chart = False
+	testplan_name = ''
+	if request.GET:
+		search_by = ('target', 'hw', 'test_type', 'image_type', 'release', 'testplan')
+		query_attrs = dict([(param, val) for param, val in request.GET.iteritems() if param in search_by and val])
+		results = TestRun.objects.filter(**query_attrs)
+
+		draw_chart = True
+		for testrun in results:
+			results_dict[testrun.id] = {
+				'date' : '%s' % testrun.start_date.strftime('%-d %b %H:%M %p'),
+				'passed' : testrun.testcaseresult_set.filter(result='passed').count(),
+				'failed' : testrun.testcaseresult_set.filter(result='failed').count()
+			}
+
+		if request.GET.get('testplan'):
+			testplan_name = TestPlan.objects.get(id=request.GET.get('testplan')).name
+
+	return render(request, 'charts/filter.html', {
+			'release_form' : [release.encode("utf8") for release in TestRun.objects.distinct('release').values_list('release', flat=True)],
+			'plan_form' : TestPlan.objects.distinct('name').all(),
+			'type_form' : [ttype.encode("utf8") for ttype in TestRun.objects.distinct('test_type').values_list('test_type', flat=True)],
+			'targets_form' : [target.encode("utf8") for target in TestRun.objects.distinct('target').values_list('target', flat=True)],
+			'itype_form' : [itype.encode("utf8") for itype in TestRun.objects.distinct('image_type').values_list('image_type', flat=True)],
+			'hw_form' : [hw.encode("utf8") for hw in TestRun.objects.distinct('hw').values_list('hw', flat=True)],
+			'query' : request.GET.get('release', '') + " " + testplan_name + " " +
+					  request.GET.get('test_type', '') + " " + request.GET.get('target', '') + " " +
+					  request.GET.get('image_type', '') + " " + request.GET.get('hw', ''),
+			'draw_chart' : draw_chart,
+			'results_dict' : results_dict
+		})
 
 def dashboard(request):
 	
@@ -78,7 +122,7 @@ def dashboard(request):
 
 	last_testruns = all_testruns[-10:]
 	for testrun in last_testruns:
-		passed = testrun.testresult_set.filter(result='pass').count()
+		passed = testrun.testresult_set.filter(result='passed').count()
 		testruns.append({
 			'id'     : testrun.id,
 			'date'   : testrun.date,
@@ -97,10 +141,10 @@ def testrun(request, id):
 
 	testrun = get_object_or_404(TestRun, pk = id)
 	testcaseresults = testrun.testcaseresult_set.all
-	passed = testrun.testcaseresult_set.filter(result='pass').count()
+	passed = testrun.testcaseresult_set.filter(result='passed').count()
 
 	return render(request, 'charts/testrun.html', {
-			'date'        : testrun.date,
+			'date'        : testrun.start_date,
 			'commit'      : testrun.poky_commit,
 			'target'      : testrun.target,
 			'itype'       : testrun.image_type,
@@ -117,8 +161,8 @@ def testreport(request, release):
 	passes = fails = 0
 	for testrun in testreport:
 		no_testcaseresults = testrun.testcaseresult_set.count()
-		passes +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='fail').count()
-		fails +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='pass').count()
+		passes +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='failed').count()
+		fails +=  no_testcaseresults - testrun.testcaseresult_set.filter(result='passed').count()
 
 	return render(request, 'charts/testreport.html', {
 			'fails' : fails,
@@ -133,7 +177,7 @@ def planenv(request, release, testplan, target, hw):
 	failed = {}
 	testruns = TestRun.objects.filter(release=release).filter(testplan_id=testplan, target=target, hw=hw)
 	for testrun in testruns:
-		failed[testrun.testrun_id] = testrun.testcaseresult_set.filter(result='fail').all()
+		failed[testrun.id] = testrun.testcaseresult_set.filter(result='failed').all()
 
 	testplan_name = testruns[0].testplan.name
 
@@ -144,7 +188,6 @@ def planenv(request, release, testplan, target, hw):
 			'testruns' : testruns,
 			'failed' : failed
 		})
-
 
 """
 	testreports = []

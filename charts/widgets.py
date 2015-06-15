@@ -50,6 +50,8 @@ class ToasterTable(View):
         self.filter_actions = {}
         self.empty_state = "Sorry - no data found"
         self.default_orderby = ""
+        self.last_line = False
+
         if last_line:
             self.last_line = True
 

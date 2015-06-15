@@ -6,6 +6,8 @@ from . import views, tables
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^(?P<version>[0-9.]+)$', views.index, name='index_2'),
+    url(r'^search/$', views.search, name='search'),
+    url(r'^filter/$', views.filter, name='filter'),
     url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^testrun/(?P<id>[0-9]+)$', views.testrun, name='testrun'),
     url(r'^testrun/', lambda x: HttpResponseBadRequest(), name='base_testrun'),

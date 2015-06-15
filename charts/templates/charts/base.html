@@ -45,15 +45,20 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                            </div>
+                            <form method="get" action="{% url 'charts:search' %}">
+                                <div class="input-group">
+                                    <input type="text" name="q" class="form-control" placeholder="Search..." />
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
                             <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="{% url 'charts:filter' %}"><i class="fa fa-filter fa-fw"></i> Custom Filters</a>
                         </li>
                         <li>
                             <a href="{% url 'charts:dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
