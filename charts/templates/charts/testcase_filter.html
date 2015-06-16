@@ -1,0 +1,109 @@
+{% extends "charts/base.html" %}
+
+{% block title %}Yocto QA Tests{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        {% if draw_chart %}
+            google.load('visualization', '1.1', {packages: ['corechart']});
+            google.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Date');
+                data.addColumn('number', 'Status');
+                data.addColumn({type: 'string', role: 'tooltip'});
+                data.addColumn({ type: 'string', role: 'style' });
+
+                var ids = {};
+                {% for id, obj in results_dict.items %}
+                    data.addRow(
+                        ['{{ obj.date }}',
+                        {{ obj.result }},
+                        '{{ obj.release }}',
+                        {% if obj.result == 2 %}
+                            'rgb(20, 200, 60)'
+                        {% else %}
+                            'rgb(200, 20, 60)'
+                        {% endif %}
+                        ]);
+                    ids[{{ forloop.counter0 }}] = {{ id }};
+                {% endfor %}
+
+                var options = {
+                    title: "Results for: {{ query }}",
+                    theme: 'material',
+                    vAxis: {
+                    	gridlines : {
+                    		count: 1
+                    	},
+                    	title: "1 - passed, 0 - else"
+                    },
+                    legend: 'none',
+                    bar: {groupWidth: "100%"},
+                    width: '100%',
+                    height: 500,
+                    pointSize: 4
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+
+                function selectHandler() {
+                    var selectedItem = chart.getSelection()[0];
+                    if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
+                        var newlink = {% url 'charts:base_testrun' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
+                        window.location.href = newlink;
+                    }
+                }
+                google.visualization.events.addListener(chart, 'select', selectHandler);
+
+
+                chart.draw(data, options);
+            }
+
+            $(window).resize(function() {
+                drawChart();
+            });
+        {% endif %}
+    </script>
+
+{% endblock scripts %}
+
+{% block body %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Select a Test Case</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form method="get" action="" class="form-inline">
+                            <div class="form-group">
+                            	<label >Test Case id:</label>
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Go</button>
+                        </form>
+
+                        <div id="barchart"></div>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+                
+            </div>
+            <!-- /.col-lg-8 -->
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+{% endblock body %}

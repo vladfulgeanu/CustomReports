@@ -187,6 +187,9 @@ class SearchTable(ToasterTable):
 
         self.queryset = found_entries.order_by(self.default_orderby)
 
+        if self.queryset.count() == 0:
+            self.title = "Nothing to display"
+
     def setup_columns(self, *args, **kwargs):
 
         testrun_template = '''<a href="{% url 'charts:testrun' data.id %}">{{ data.id }} </a>'''

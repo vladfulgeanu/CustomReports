@@ -58,19 +58,16 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="{% url 'charts:filter' %}"><i class="fa fa-filter fa-fw"></i> Custom Filters</a>
-                        </li>
-                        <li>
                             <a href="{% url 'charts:dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Menu<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-filter fa-fw"></i> Custom Filters<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Submenu 1</a>
+                                    <a href="{% url 'charts:testrun_filter' %}"><i class="fa fa-area-chart fa-fw"></i>Test Runs</a>
                                 </li>
                                 <li>
-                                    <a href="#">Submenu 2</a>
+                                    <a href="{% url 'charts:testcase_filter' %}"><i class="fa fa-bar-chart-o fa-fw"></i>Test Cases</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

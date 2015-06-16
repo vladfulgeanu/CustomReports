@@ -70,16 +70,16 @@ def index(request, version=None):
 			'testruns' : collections.OrderedDict(sorted(testruns.items(), reverse=True))
 		})
 
-def filter(request):
+def testrun_filter(request):
 
 	results = None
-	results_dict = {}
+	results_dict = collections.OrderedDict()
 	draw_chart = False
 	testplan_name = ''
 	if request.GET:
 		search_by = ('target', 'hw', 'test_type', 'image_type', 'release', 'testplan')
 		query_attrs = dict([(param, val) for param, val in request.GET.iteritems() if param in search_by and val])
-		results = TestRun.objects.filter(**query_attrs)
+		results = TestRun.objects.filter(**query_attrs).order_by('start_date')
 
 		draw_chart = True
 		for testrun in results:
@@ -92,7 +92,7 @@ def filter(request):
 		if request.GET.get('testplan'):
 			testplan_name = TestPlan.objects.get(id=request.GET.get('testplan')).name
 
-	return render(request, 'charts/filter.html', {
+	return render(request, 'charts/testrun_filter.html', {
 			'release_form' : [release.encode("utf8") for release in TestRun.objects.distinct('release').values_list('release', flat=True)],
 			'plan_form' : TestPlan.objects.distinct('name').all(),
 			'type_form' : [ttype.encode("utf8") for ttype in TestRun.objects.distinct('test_type').values_list('test_type', flat=True)],
@@ -102,6 +102,29 @@ def filter(request):
 			'query' : request.GET.get('release', '') + " " + testplan_name + " " +
 					  request.GET.get('test_type', '') + " " + request.GET.get('target', '') + " " +
 					  request.GET.get('image_type', '') + " " + request.GET.get('hw', ''),
+			'draw_chart' : draw_chart,
+			'results_dict' : results_dict
+		})
+
+
+def testcase_filter(request):
+
+	results = None
+	results_dict = collections.OrderedDict()
+	draw_chart = False
+	if request.GET:
+		if request.GET['name']:
+			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('testrun__start_date')
+			draw_chart = True
+			for testcase in results:
+				results_dict[testcase.testrun.id] = {
+					'date' : '%s' % testcase.testrun.start_date.strftime('%-d %b %H:%M %p'),
+					'result' : 2 if testcase.result == 'passed' else 1,
+					'release' : testcase.testrun.poky_commit + "\\n" + testcase.testrun.release
+				}
+
+	return render(request, 'charts/testcase_filter.html', {
+			'query' : request.GET.get('name', ''),
 			'draw_chart' : draw_chart,
 			'results_dict' : results_dict
 		})
