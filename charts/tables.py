@@ -226,6 +226,10 @@ class SearchTable(ToasterTable):
                         orderable=True,
                         field_name='image_type')
 
+        self.add_column(title="HW arch",
+                        hideable=False,
+                        orderable=True,
+                        field_name='hw_arch')
 
         self.add_column(title="HW",
                         hideable=False,

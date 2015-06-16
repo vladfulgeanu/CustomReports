@@ -30,6 +30,7 @@
                     title: "Results for: {{ query }}",
                     theme: 'material',
                     curveType: 'function',
+                    colors : ['#4CAF50', '#F44336'],
                     width: '100%',
                     height: 500,
                     pointSize: 4
@@ -68,7 +69,7 @@
         </div>
         <!-- /.row -->
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-10">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <form method="get" action="" class="form-inline">
@@ -81,7 +82,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select name="testplan" class="form-control">
+                                <select name="testplan" class="form-control" style="width: 120px;">
                                     <option value="" disabled selected>Test Plan</option>
                                     {% for plan in plan_form %}
                                         <option value="{{ plan.id }}">{{ plan.name }}</option>
@@ -97,15 +98,23 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select name="target" class="form-control ">
+                                <select name="poky_commit" class="form-control" style="width: 120px;">
+                                    <option value="" disabled selected>Commit</option>
+                                    {% for commit in commit_form %}
+                                        <option value="{{ commit }}">{{ commit }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group btn-group">
+                                <select name="target" class="form-control">
                                     <option value="" disabled selected>Target</option>
-                                    {% for target in targets_form %}
+                                    {% for target in target_form %}
                                         <option value="{{ target }}">{{ target }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select name="image_type" class="form-control ">
+                                <select name="image_type" class="form-control">
                                     <option value="" disabled selected>Image type</option>
                                     {% for itype in itype_form %}
                                         <option value="{{ itype }}">{{ itype }}</option>
@@ -113,8 +122,16 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <select name="hw_arch" class="form-control">
+                                    <option value="" disabled selected>HW arch</option>
+                                    {% for hwa in hwa_form %}
+                                        <option value="{{ hwa }}">{{ hwa }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <select name="hw" class="form-control">
-                                    <option value="" disabled selected>Hardware</option>
+                                    <option value="" disabled selected>HW</option>
                                     {% for hw in hw_form %}
                                         <option value="{{ hw }}">{{ hw }}</option>
                                     {% endfor %}
@@ -130,7 +147,7 @@
                 <!-- /.panel -->
                 
             </div>
-            <!-- /.col-lg-8 -->
+            <!-- /.col-lg-10 -->
         </div>
         <!-- /.row -->
 

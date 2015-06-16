@@ -58,7 +58,7 @@ def index(request, version=None):
 			failed += testrun_in_release.testcaseresult_set.filter(result='failed').count()
 
 		testruns[uniq_release_testrun.release.encode('ascii', 'ignore')] = {
-			'rc' : uniq_release_testrun.release[-3:],
+			'release' : uniq_release_testrun.release,
 			'passed' : passed,
 			'failed' : failed
 		}
@@ -77,7 +77,7 @@ def testrun_filter(request):
 	draw_chart = False
 	testplan_name = ''
 	if request.GET:
-		search_by = ('target', 'hw', 'test_type', 'image_type', 'release', 'testplan')
+		search_by = ('testplan', 'release', 'test_type', 'poky_commit', 'target', 'image_type', 'hw_arch', 'hw')
 		query_attrs = dict([(param, val) for param, val in request.GET.iteritems() if param in search_by and val])
 		results = TestRun.objects.filter(**query_attrs).order_by('start_date')
 
@@ -96,12 +96,14 @@ def testrun_filter(request):
 			'release_form' : [release.encode("utf8") for release in TestRun.objects.distinct('release').values_list('release', flat=True)],
 			'plan_form' : TestPlan.objects.distinct('name').all(),
 			'type_form' : [ttype.encode("utf8") for ttype in TestRun.objects.distinct('test_type').values_list('test_type', flat=True)],
-			'targets_form' : [target.encode("utf8") for target in TestRun.objects.distinct('target').values_list('target', flat=True)],
+			'commit_form' : [commit.encode("utf8") for commit in TestRun.objects.distinct('poky_commit').values_list('poky_commit', flat=True)],
+			'target_form' : [target.encode("utf8") for target in TestRun.objects.distinct('target').values_list('target', flat=True)],
 			'itype_form' : [itype.encode("utf8") for itype in TestRun.objects.distinct('image_type').values_list('image_type', flat=True)],
+			'hwa_form' : [hwa.encode("utf8") for hwa in TestRun.objects.distinct('hw_arch').values_list('hw_arch', flat=True)],
 			'hw_form' : [hw.encode("utf8") for hw in TestRun.objects.distinct('hw').values_list('hw', flat=True)],
-			'query' : request.GET.get('release', '') + " " + testplan_name + " " +
-					  request.GET.get('test_type', '') + " " + request.GET.get('target', '') + " " +
-					  request.GET.get('image_type', '') + " " + request.GET.get('hw', ''),
+			'query' : request.GET.get('release', '') + " " + testplan_name + " " + request.GET.get('test_type', '') + " " +
+					  request.GET.get('poky_commit', '') + " " + request.GET.get('target', '') + " " + request.GET.get('image_type', '') + " " +
+					  request.GET.get('hw_arch', '') + " " + request.GET.get('hw', ''),
 			'draw_chart' : draw_chart,
 			'results_dict' : results_dict
 		})
@@ -163,16 +165,14 @@ def dashboard(request):
 def testrun(request, id):
 
 	testrun = get_object_or_404(TestRun, pk = id)
-	testcaseresults = testrun.testcaseresult_set.all
-	passed = testrun.testcaseresult_set.filter(result='passed').count()
+	testcaseresults = testrun.testcaseresult_set.all()
 
 	return render(request, 'charts/testrun.html', {
-			'date'        : testrun.start_date,
-			'commit'      : testrun.poky_commit,
-			'target'      : testrun.target,
-			'itype'       : testrun.image_type,
-			'passed'      : passed,
-			'failed'      : testrun.testcaseresult_set.count() - passed,
+			'testrun'     : testrun,
+			'passed'      : testcaseresults.filter(result='passed').count(),
+			'failed'      : testcaseresults.filter(result='failed').count(),
+			'blocked'     : testcaseresults.filter(result='blocked').count(),
+			'idle'        : testcaseresults.filter(result='idle').count(),
 			'testcaseresults' : testcaseresults
 		})
 

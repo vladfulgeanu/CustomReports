@@ -32,21 +32,51 @@
                                     </span>
                                 </div>
                             </span>
-                            <span class="list-group-item">
-                                <h4 class="list-group-item-heading">Date</h4>
-                                <p class="list-group-item-text">{{ date }}</p>
+                            <span class="list-group-item container-fluid row">
+                                <div class="col-sm-6">
+                                    <span>
+                                      <h4 class="list-group-item-heading">Blocked</h4>
+                                      <p class="list-group-item-text">{{ blocked }}</p>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span>
+                                      <h4 class="list-group-item-heading">Idle</h4>
+                                      <p class="list-group-item-text">{{ idle }}</p>
+                                    </span>
+                                </div>
                             </span>
                             <span class="list-group-item">
-                                <h4 class="list-group-item-heading">Commit</h4>
-                                <p class="list-group-item-text">{{ commit }}</p>
+                                <h4 class="list-group-item-heading">Start Date</h4>
+                                <p class="list-group-item-text">{{ testrun.start_date }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Test Plan</h4>
+                                <p class="list-group-item-text">{{ testrun.testplan.name }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Release</h4>
+                                <p class="list-group-item-text">{{ testrun.release }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Test type</h4>
+                                <p class="list-group-item-text">{{ testrun.test_type }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">Poky commit - branch</h4>
+                                <p class="list-group-item-text">{{ testrun.poky_commit }} on {{ testrun.poky_branch }}</p>
                             </span>
                             <span class="list-group-item">
                                 <h4 class="list-group-item-heading">Target</h4>
-                                <p class="list-group-item-text">{{ target }}</p>
+                                <p class="list-group-item-text">{{ testrun.target }}</p>
                             </span>
                             <span class="list-group-item">
                                 <h4 class="list-group-item-heading">Image type</h4>
-                                <p class="list-group-item-text">{{ itype }}</p>
+                                <p class="list-group-item-text">{{ testrun.image_type }}</p>
+                            </span>
+                            <span class="list-group-item">
+                                <h4 class="list-group-item-heading">HW</h4>
+                                <p class="list-group-item-text">{{ testrun.hw_arch }} - {{ testrun.hw }}</p>
                             </span>
                         </div>
                         <!-- /.panel-body -->

@@ -24,9 +24,9 @@
                         {{ obj.result }},
                         '{{ obj.release }}',
                         {% if obj.result == 2 %}
-                            'rgb(20, 200, 60)'
+                            'rgb(76, 175, 80)'
                         {% else %}
-                            'rgb(200, 20, 60)'
+                            'rgb(244, 67, 54)'
                         {% endif %}
                         ]);
                     ids[{{ forloop.counter0 }}] = {{ id }};
@@ -39,7 +39,8 @@
                     	gridlines : {
                     		count: 1
                     	},
-                    	title: "1 - passed, 0 - else"
+                        minValue: 0,
+                        maxValue: 2
                     },
                     legend: 'none',
                     bar: {groupWidth: "100%"},

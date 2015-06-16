@@ -5,59 +5,51 @@
 {% block scripts %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["bar"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
+        google.load("visualization", "1.1", {packages:['corechart']});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
 
-        var data = new google.visualization.DataTable();
+            var data = new google.visualization.DataTable();
 
-        data.addColumn('string', 'Release');
-        data.addColumn('number', 'Passed');
-        data.addColumn('number', 'Failed');
+            data.addColumn('string', 'Release');
+            data.addColumn('number', 'Passed');
+            data.addColumn('number', 'Failed');
 
-        var ids = {};
-        {% for release, obj in testruns.items %}
-            data.addRow(
-              ['{{ release }}',
-               {{ obj.passed }},
-               {{ obj.failed }}
-               ]);
-            ids[{{ forloop.counter0 }}] = '{{ release }}';
-        {% endfor %}
+            var ids = {};
+            {% for release, obj in testruns.items %}
+                data.addRow(
+                    ['{{ release }}',
+                      {{ obj.passed }},
+                      {{ obj.failed }}
+                    ]);
+                ids[{{ forloop.counter0 }}] = '{{ release }}';
+            {% endfor %}
 
+            var options = {
+                title : 'Tests run for version {{ version }}',
+                height : 500,
+                chartArea : {width: '80%', height: '80%'},
+                theme : 'material',
+                colors : ['#4CAF50', '#F44336'],
+                isStacked : true,
+            };
 
-        var options = {
-          height: 500,
-          chartArea: {width: '90%', height: '80%'},
-          focusTarget: 'category',
+            var chart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
 
-          legend: 'none',
+            function selectHandler() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
+                    var newlink = {% url 'charts:base_testreport' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
+                    window.location.href = newlink;
+                }
+            }
+            google.visualization.events.addListener(chart, 'select', selectHandler);
 
-          colors: ['#8bc34a', '#d32f2f'],
-
-          isStacked: true,
-
-          chart: {
-            title: 'Tests run for version {{ version }}',
-          },
-        };
-
-        var chart = new google.charts.Bar(document.getElementById('columnchart'));
-
-        function selectHandler() {
-          var selectedItem = chart.getSelection()[0];
-          if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
-            var newlink = {% url 'charts:base_testreport' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
-            window.location.href = newlink;
-          }
+            chart.draw(data, options);
         }
-        google.visualization.events.addListener(chart, 'select', selectHandler);
 
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-      }
-
-      $(window).resize(function() {
-          drawChart();
+        $(window).resize(function() {
+            drawChart();
         });
     </script>
 
@@ -73,7 +65,7 @@
         </div>
         <!-- /.row -->
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-10">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="dropdown">
@@ -102,7 +94,7 @@
                 <!-- /.panel -->
                 
             </div>
-            <!-- /.col-lg-8 -->
+            <!-- /.col-lg-10 -->
         </div>
         <!-- /.row -->
 
