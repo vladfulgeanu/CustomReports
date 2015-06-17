@@ -116,7 +116,7 @@ def testcase_filter(request):
 	draw_chart = False
 	if request.GET:
 		if request.GET['name']:
-			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('testrun__start_date')
+			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('-testrun__start_date')
 			draw_chart = True
 			for testcase in results:
 				results_dict[testcase.testrun.id] = {

@@ -21,7 +21,7 @@
                 {% for id, obj in results_dict.items %}
                     data.addRow(
                         ['{{ obj.date }}',
-                        {{ obj.result }},
+                        0.2,
                         '{{ obj.release }}',
                         {% if obj.result == 2 %}
                             'rgb(76, 175, 80)'
@@ -42,14 +42,21 @@
                         minValue: 0,
                         maxValue: 2
                     },
+                    hAxis: {
+                        gridlines : {
+                            count: 1
+                        },
+                        minValue: 0,
+                        maxValue: 2
+                    },
                     legend: 'none',
-                    bar: {groupWidth: "100%"},
+                    bar: {groupWidth: "90%"},
                     width: '100%',
                     height: 500,
                     pointSize: 4
                 };
 
-                var chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+                var chart = new google.visualization.BarChart(document.getElementById('barchart'));
 
                 function selectHandler() {
                     var selectedItem = chart.getSelection()[0];
