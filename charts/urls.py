@@ -9,7 +9,6 @@ urlpatterns = [
     url(r'^search/$', views.search, name='search'),
     url(r'^testrun_filter/$', views.testrun_filter, name='testrun_filter'),
     url(r'^testcase_filter/$', views.testcase_filter, name='testcase_filter'),
-    url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^testrun/(?P<id>[0-9]+)$', views.testrun, name='testrun'),
     url(r'^testrun/', lambda x: HttpResponseBadRequest(), name='base_testrun'),
     url(r'^testreport/(?P<release>[\w.]+)$', views.testreport, name='testreport'),

@@ -116,7 +116,7 @@ def testcase_filter(request):
 	draw_chart = False
 	if request.GET:
 		if request.GET['name']:
-			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('-testrun__start_date')
+			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('-testrun__start_date')[:20]
 			draw_chart = True
 			for testcase in results:
 				results_dict[testcase.testrun.id] = {
@@ -129,37 +129,6 @@ def testcase_filter(request):
 			'query' : request.GET.get('name', ''),
 			'draw_chart' : draw_chart,
 			'results_dict' : results_dict
-		})
-
-def dashboard(request):
-	
-	# latest date for testruns with report_id not null
-	latest_date = TestRun.objects.exclude(result_id__isnull=False).latest('date').date
-
-	# get report_id with latest_date
-	latest_report = TestRun.objects.filter(date=latest_date)[0].report_id
-
-	# get latest report testruns
-	latest_testruns = TestRun.objects.filter(report_id=latest_report)
-
-	all_testruns = get_list_or_404(TestRun)
-	testruns = []
-
-	last_testruns = all_testruns[-10:]
-	for testrun in last_testruns:
-		passed = testrun.testresult_set.filter(result='passed').count()
-		testruns.append({
-			'id'     : testrun.id,
-			'date'   : testrun.date,
-			'commit' : testrun.commit,
-			'target' : testrun.target,
-			'itype'  : testrun.image_type,
-		 	'passed' : passed,
-			'failed' : testrun.testresult_set.count() - passed
-		})
-
-	return render(request, 'charts/dashboard.html', {
-			'testruns' : testruns
 		})
 
 def testrun(request, id):
