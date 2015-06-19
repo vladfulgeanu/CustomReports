@@ -17,6 +17,7 @@ try:
 	product_version = str(sys.argv[3])
 except IndexError, NameError:
 	print "Usage: add_testplan \"<name>\" \"<product>\" \"<product_version>\""
+	print "Example: python add_testplan.py \"BSP/QEMU master branch\" \"BSPs\" \"1.8\""
 	sys.exit(1)
 
 

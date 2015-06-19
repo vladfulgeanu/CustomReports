@@ -27,6 +27,8 @@ try:
 
 except IndexError, NameError:
 	print "Usage: add_testrun <log_file> \"<version>\" \"<release>\" \"<test_type>\" \"<poky_commit>\" \"<poky_branch>\" \"<start_date>\" \"<target>\" \"<image_type>\" \"<hw_arch>\" \"<hw>\""
+	print "Example: python add_testrun.py results.log \"1.8\" \"1.8_rc1\" \"Weekly\" \"29812e61736a95f1de64b3e9ebbb9c646ebd28dd\" \"master\" \"2015-05-15 11:39:23\" \"genericx86\" \"core-image-sato\" \"x86_64\" \"NUC\""
+	print "<start_date> _must_ respect the format in the example. <test_type> _must_ be either \"Weekly\" or \"Full Pass\""
 	sys.exit(1)
 
 
