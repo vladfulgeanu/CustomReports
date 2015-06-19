@@ -31,6 +31,8 @@ except IndexError, NameError:
 	print "<start_date> _must_ respect the format in the example. <test_type> _must_ be either \"Weekly\" or \"Full Pass\""
 	sys.exit(1)
 
+testrun_obj = None
+testcaseresult_list = []
 
 testrun = {
 	'version' : version,
@@ -52,8 +54,6 @@ if testrun_form.is_valid():
 		testrun_obj.testplan = get_object_or_404(TestPlan, name="OE-Core master branch")
 	else:
 		testrun_obj.testplan = get_object_or_404(TestPlan, name="BSP/QEMU master branch")
-	testrun_obj.save()
-	print "TestRun saved"
 else:
 	print 'Error: TestRun json is not valid'
 	sys.exit(1)
@@ -102,9 +102,16 @@ for i in xrange(len(content) - 1):
 		if testcaseresult_form.is_valid():
 			testcaseresult_obj = testcaseresult_form.save(commit=False)
 			testcaseresult_obj.testrun = testrun_obj
-			testcaseresult_obj.save()
+			testcaseresult_list.append(testcaseresult_obj)
 		else:
 			print 'Error: A TestCaseResult json is not valid'
 			sys.exit(1)
+
+
+testrun_obj.save()
+print "TestRun saved"
+
+for testcaseresult in testcaseresult_list:
+	testcaseresult.save()
 
 print "All TestCaseResults saved. Done"
