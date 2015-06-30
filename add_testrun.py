@@ -32,7 +32,6 @@ except IndexError, NameError:
 	sys.exit(1)
 
 testrun_obj = None
-testcaseresult_list = []
 
 testrun = {
 	'version' : version,
@@ -54,8 +53,10 @@ if testrun_form.is_valid():
 		testrun_obj.testplan = get_object_or_404(TestPlan, name="OE-Core master branch")
 	else:
 		testrun_obj.testplan = get_object_or_404(TestPlan, name="BSP/QEMU master branch")
+	testrun_obj.save()
+	print "TestRun saved"
 else:
-	print 'Error: TestRun json is not valid'
+	print 'Error: TestRun json is not valid. Exiting ...'
 	sys.exit(1)
 
 
@@ -65,6 +66,8 @@ test_id = result = msg = ""
 
 if not os.path.isfile(log_file):
 	print "Error: Cannot find log file"
+	testrun_obj.delete()
+	print 'Test Run deleted. Exiting ...'
 	sys.exit(1)
 
 with open(log_file, 'r') as content_file:
@@ -80,7 +83,7 @@ for i in xrange(len(content) - 1):
 		result = content[i].split(":")[1].lower().replace(" ", "")
 		if result == "failed":
 			for j in range(i + 2, len(content) - 1):
-				if " - Testcase " not in content[j]: # TODO and (content[j] != ""):
+				if (" - Testcase " not in content[j]) and (content[j] != ""):
 					msg += content[j] + "\n"
 				else:
 					break
@@ -102,16 +105,11 @@ for i in xrange(len(content) - 1):
 		if testcaseresult_form.is_valid():
 			testcaseresult_obj = testcaseresult_form.save(commit=False)
 			testcaseresult_obj.testrun = testrun_obj
-			testcaseresult_list.append(testcaseresult_obj)
+			testcaseresult_obj.save()
 		else:
 			print 'Error: A TestCaseResult json is not valid'
+			testrun_obj.delete()
+			print 'Test Run deleted. Exiting ...'
 			sys.exit(1)
-
-
-testrun_obj.save()
-print "TestRun saved"
-
-for testcaseresult in testcaseresult_list:
-	testcaseresult.save()
 
 print "All TestCaseResults saved. Done"

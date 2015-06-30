@@ -21,7 +21,7 @@
                 {% for id, obj in results_dict.items %}
                     data.addRow(
                         ['{{ obj.date }}',
-                        0.2,
+                        0.35,
                         '{{ obj.release }}',
                         {% if obj.result == 2 %}
                             'rgb(76, 175, 80)'
@@ -51,8 +51,8 @@
                     },
                     legend: 'none',
                     bar: {groupWidth: "90%"},
-                    width: '100%',
-                    height: 500,
+                    width: '80%',
+                    height: 650,
                     pointSize: 4
                 };
 

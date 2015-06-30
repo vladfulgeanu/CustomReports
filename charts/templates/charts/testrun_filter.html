@@ -27,16 +27,21 @@
                 {% endfor %}
 
                 var options = {
-                    title: "Results for: {{ query }}",
-                    theme: 'material',
-                    curveType: 'function',
+                    title : "Results for: {{ query }}",
+                    theme : 'material',
+                    curveType : 'function',
                     colors : ['#4CAF50', '#F44336'],
-                    width: '100%',
-                    height: 500,
-                    pointSize: 4
+                    width : '100%',
+                    height : 500,
+                    isStacked : true,
+                    // pointSize : 4,
+                    explorer : {
+                        axis : 'horizontal',
+                        actions : ['dragToZoom', 'rightClickToReset']
+                    }
                 };
 
-                var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+                var chart = new google.visualization.ColumnChart(document.getElementById('linechart'));
 
                 function selectHandler() {
                     var selectedItem = chart.getSelection()[0];
