@@ -20,7 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from widgets import ToasterTable
-from charts.models import TestRun
+from charts.models import TestRun, TestCaseResult
 from django.db.models import Q
 from django.db.models import Count, Max, Min, Sum, Avg
 from django.conf.urls import url
@@ -106,7 +106,11 @@ class TestReportTable(ToasterTable):
         # print total + "   " + total_passed
         abs_pass_template = '''\
         {% with percentage=data.get_abs_passed_percentage %}\
-        <span>{{ percentage }}%</span>\
+        {% if percentage > 90 %}\
+            <span class=\"text-success\">{{ percentage }}%</span>\
+        {% else %}\
+            <span class=\"text-danger\">{{ percentage }}%</span>\
+        {% endif %}
         {% endwith %}\
         '''
 
@@ -118,7 +122,11 @@ class TestReportTable(ToasterTable):
 
         relative_pass_template = '''\
         {% with percentage=data.get_relative_passed_percentage %}\
-        <span>{{ percentage }}%</span>\
+        {% if percentage > 90 %}\
+            <span class=\"text-success\">{{ percentage }}%</span>\
+        {% else %}\
+            <span class=\"text-danger\">{{ percentage }}%</span>\
+        {% endif %}
         {% endwith %}\
         '''
 
@@ -188,7 +196,7 @@ class SearchTable(ToasterTable):
         self.queryset = found_entries.order_by(self.default_orderby)
 
         if self.queryset.count() == 0:
-            self.title = "Nothing to display"
+            self.title = "No results found"
 
     def setup_columns(self, *args, **kwargs):
 
@@ -235,6 +243,59 @@ class SearchTable(ToasterTable):
                         hideable=False,
                         orderable=True,
                         field_name='hw')
+
+class TestCaseTable(ToasterTable):
+    """Table of layers in Toaster"""
+
+    def __init__(self, *args, **kwargs):
+        ToasterTable.__init__(self, False)
+
+    def setup_queryset(self, *args, **kwargs):
+
+        results = None
+
+        if self.request.GET:
+            if self.request.GET['name']:
+                query = urlparse.urlparse(self.request.get_full_path()).query
+                query_string = urlparse.parse_qs(query)['name'][0].encode('ascii','ignore')
+                results = TestCaseResult.objects.filter(testcase_id=query_string).order_by('-testrun__start_date')
+
+        self.queryset = results
+
+        if self.queryset.count() == 0:
+            self.title = "No results found"
+
+    def setup_columns(self, *args, **kwargs):
+
+        date_template = '''<a href="{% url 'charts:testrun' data.testrun.id %}"> {{ data.testrun.start_date|date:"d M Y P" }} </a>'''
+
+        self.add_column(title="Date",
+                        hideable=False,
+                        orderable=True,
+                        static_data_name="testrun__start_date",
+                        static_data_template=date_template)
+
+        result_template = ''' <span class={% if data.result == 'passed' %} 'text-success'\
+                                          {% else %} 'text-danger'\
+                                          {% endif %}>\
+                                          {{ data.result }} </span> '''
+
+        self.add_column(title="Status",
+                        hideable=False,
+                        orderable=True,
+                        static_data_name="result",
+                        static_data_template=result_template)
+
+        self.add_column(title="Commit",
+                        hideable=False,
+                        orderable=True,
+                        field_name="testrun__poky_commit")
+
+        self.add_column(title="Release",
+                        hideable=False,
+                        orderable=True,
+                        field_name="testrun__release")
+
  
 
 
@@ -242,5 +303,6 @@ class SearchTable(ToasterTable):
 # on start up
 urlpatterns = (
     url(r'testreport/(?P<release>[\w.]+)/(?P<cmd>\w+)*', TestReportTable.as_view(), name=TestReportTable.__name__.lower()),
-    url(r'search/(?P<cmd>\w+)*', SearchTable.as_view(), name=SearchTable.__name__.lower())
+    url(r'search/(?P<cmd>\w+)*', SearchTable.as_view(), name=SearchTable.__name__.lower()),
+    url(r'testcasefilter/(?P<cmd>\w+)*', TestCaseTable.as_view(), name=TestCaseTable.__name__.lower())
 )

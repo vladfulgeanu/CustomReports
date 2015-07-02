@@ -85,8 +85,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                 {% for choice in version_form.versions.field.choices %}
-                                    {% if forloop.counter0 == 0 %}
-                                    {% else %}
+                                    {% if forloop.counter0 != 0 %}
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'charts:index_2' choice.0 %}">{{ choice.0 }}</a></li>
                                     {% endif %}
                                 {% endfor %}

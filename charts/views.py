@@ -111,24 +111,17 @@ def testrun_filter(request):
 
 def testcase_filter(request):
 
-	results = None
-	results_dict = collections.OrderedDict()
 	draw_chart = False
+	is_empty = False
 	if request.GET:
 		if request.GET['name']:
-			results = TestCaseResult.objects.filter(testcase_id=request.GET['name']).order_by('-testrun__start_date')[:20]
 			draw_chart = True
-			for testcase in results:
-				results_dict[testcase.testrun.id] = {
-					'date' : '%s' % testcase.testrun.start_date.strftime('%-d %b %H:%M %p'),
-					'result' : 2 if testcase.result == 'passed' else 1,
-					'release' : testcase.testrun.poky_commit + "\\n" + testcase.testrun.release
-				}
+			if TestCaseResult.objects.filter(testcase_id=request.GET['name']).count() == 0:
+				is_empty = True
 
-	return render(request, 'charts/testcase_filter.html', {
-			'query' : request.GET.get('name', ''),
-			'draw_chart' : draw_chart,
-			'results_dict' : results_dict
+	return render(request, 'charts/testcase_filter.html', {			'draw_chart' : draw_chart,
+			'is_empty' : is_empty,
+			'table_name' : tables.TestCaseTable.__name__.lower()
 		})
 
 def testrun(request, id):

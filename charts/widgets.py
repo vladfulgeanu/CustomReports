@@ -335,6 +335,9 @@ class ToasterTable(View):
                 data['rows'].append(required_data)
 
             if self.last_line:
+                abs_precentage = ("%.2f" % ((self.parser.passed / float(self.parser.total)) * 100)).rstrip('0').rstrip('.') + "%</span>"
+                relative_precentage = ("%.2f" % ((self.parser.passed / float(self.parser.run)) * 100)).rstrip('0').rstrip('.') + "%</span>"
+
                 required_data = {
                     1 : "<strong>Total</strong>",
                     2 : '',
@@ -343,8 +346,10 @@ class ToasterTable(View):
                     5 : self.parser.passed.__str__(),
                     6 : "<span class='text-success'>" + self.parser.failed.__str__() + "</span>" if self.parser.failed == 0
                         else "<span class='text-danger'>" + self.parser.failed.__str__() + "</span>",
-                    7 : ("%.2f" % ((self.parser.passed / float(self.parser.total)) * 100)).rstrip('0').rstrip('.') + "%",
-                    8 : ("%.2f" % ((self.parser.passed / float(self.parser.run)) * 100)).rstrip('0').rstrip('.') + "%"
+                    7: "<span class='text-success'>" + abs_precentage if ((self.parser.passed / float(self.parser.total)) * 100) > 90 else
+                       "<span class='text-danger'>" + abs_precentage,
+                    8: "<span class='text-success'>" + relative_precentage if ((self.parser.passed / float(self.parser.run)) * 100) > 90 else
+                       "<span class='text-danger'>" + relative_precentage,
                 }
 
                 data['rows'].append(required_data)

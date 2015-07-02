@@ -2,83 +2,6 @@
 
 {% block title %}Yocto QA Tests{% endblock %}
 
-{% block scripts %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        {% if draw_chart %}
-            google.load('visualization', '1.1', {packages: ['corechart']});
-            google.setOnLoadCallback(drawChart);
-
-            function drawChart() {
-
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Date');
-                data.addColumn('number', 'Status');
-                data.addColumn({type: 'string', role: 'tooltip'});
-                data.addColumn({ type: 'string', role: 'style' });
-
-                var ids = {};
-                {% for id, obj in results_dict.items %}
-                    data.addRow(
-                        ['{{ obj.date }}',
-                        0.35,
-                        '{{ obj.release }}',
-                        {% if obj.result == 2 %}
-                            'rgb(76, 175, 80)'
-                        {% else %}
-                            'rgb(244, 67, 54)'
-                        {% endif %}
-                        ]);
-                    ids[{{ forloop.counter0 }}] = {{ id }};
-                {% endfor %}
-
-                var options = {
-                    title: "Results for: {{ query }}",
-                    theme: 'material',
-                    vAxis: {
-                    	gridlines : {
-                    		count: 1
-                    	},
-                        minValue: 0,
-                        maxValue: 2
-                    },
-                    hAxis: {
-                        gridlines : {
-                            count: 1
-                        },
-                        minValue: 0,
-                        maxValue: 2
-                    },
-                    legend: 'none',
-                    bar: {groupWidth: "90%"},
-                    width: '80%',
-                    height: 650,
-                    pointSize: 4
-                };
-
-                var chart = new google.visualization.BarChart(document.getElementById('barchart'));
-
-                function selectHandler() {
-                    var selectedItem = chart.getSelection()[0];
-                    if (selectedItem != null && selectedItem.row != null && selectedItem.column != null) {
-                        var newlink = {% url 'charts:base_testrun' as link %}"{{ link | escapejs }}" + ids[selectedItem.row];
-                        window.location.href = newlink;
-                    }
-                }
-                google.visualization.events.addListener(chart, 'select', selectHandler);
-
-
-                chart.draw(data, options);
-            }
-
-            $(window).resize(function() {
-                drawChart();
-            });
-        {% endif %}
-    </script>
-
-{% endblock scripts %}
-
 {% block body %}
     <div id="page-wrapper">
         <div class="row">
@@ -99,8 +22,16 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Go</button>
                         </form>
+                        <br />
+                        {% if draw_chart %}
+                            {% if not is_empty %}
+                                {% url 'charts:testcasetable' as xhr_table_url %}
+                                {% include "charts/toastertable.html" %}
+                            {% else %}
+                                <h3> No results found </h3>
+                            {% endif%}
+                        {% endif %}
 
-                        <div id="barchart"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
