@@ -106,7 +106,7 @@ class TestReportTable(ToasterTable):
         # print total + "   " + total_passed
         abs_pass_template = '''\
         {% with percentage=data.get_abs_passed_percentage %}\
-        {% if percentage > 90 %}\
+        {% if percentage >= "90" %}\
             <span class=\"text-success\">{{ percentage }}%</span>\
         {% else %}\
             <span class=\"text-danger\">{{ percentage }}%</span>\
@@ -122,7 +122,7 @@ class TestReportTable(ToasterTable):
 
         relative_pass_template = '''\
         {% with percentage=data.get_relative_passed_percentage %}\
-        {% if percentage > 90 %}\
+        {% if percentage >= "90" %}\
             <span class=\"text-success\">{{ percentage }}%</span>\
         {% else %}\
             <span class=\"text-danger\">{{ percentage }}%</span>\
