@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^testrun/(?P<id>[0-9]+)$', views.testrun, name='testrun'),
     url(r'^testrun/', lambda x: HttpResponseBadRequest(), name='base_testrun'),
     url(r'^testreport/(?P<release>[\w.]+)$', views.testreport, name='testreport'),
-    url(r'^testreport/(?P<release>[\w.]+)/(?P<testplan>[0-9]+)/(?P<target>[\w.]+)/(?P<hw>[\w.-]+)$', views.planenv, name='plan_env'),
+    url(r'^testreport/(?P<release>[\w.]+)/(?P<testplan>[0-9]+)/(?P<target>[\w.-]+)/(?P<hw>[\w.-]+)$', views.planenv, name='plan_env'),
     url(r'^testreport/', lambda x: HttpResponseBadRequest(), name='base_testreport'),
     url(r'^xhr_tables/', include('charts.tables'))
 ]
