@@ -19,7 +19,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from widgets import ToasterTable
+from charts.widgets import ToasterTable
 from charts.models import TestRun, TestCaseResult
 from django.db.models import Q
 from django.db.models import Count, Max, Min, Sum, Avg
@@ -61,45 +61,50 @@ class TestReportTable(ToasterTable):
         {% endif %}\
         '''
 
-        self.add_column(title="Test Plan per environment",
-                hideable=False,
-                orderable=False,
-                static_data_name="plan_env",
-                static_data_template=custom_template)
+        self.add_column(
+            title="Test Plan per environment",
+            hideable=False,
+            orderable=False,
+            static_data_name="plan_env",
+            static_data_template=custom_template)
 
         total_template = "{% with total=data.get_total %}<span id='total'>{{ total }}</span>{% endwith %}"
 
-        self.add_column(title="Total",
-                hideable=False,
-                orderable=False,
-                static_data_name="total",
-                static_data_template=total_template)
+        self.add_column(
+            title="Total",
+            hideable=False,
+            orderable=False,
+            static_data_name="total",
+            static_data_template=total_template)
 
 
         run_template = "{% with run=data.get_run %}<span id='run'>{{ run }}</span>{% endwith %}"
 
-        self.add_column(title="Run",
-                hideable=False,
-                orderable=False,
-                static_data_name="run",
-                static_data_template=run_template)
+        self.add_column(
+            title="Run",
+            hideable=False,
+            orderable=False,
+            static_data_name="run",
+            static_data_template=run_template)
 
         passed_template = "{% with passed=data.get_passed %}<span id='passed'>{{ passed }}</span>{% endwith %}"
 
-        self.add_column(title="Passed",
-                hideable=False,
-                orderable=False,
-                static_data_name="passed",
-                static_data_template=passed_template)
+        self.add_column(
+            title="Passed",
+            hideable=False,
+            orderable=False,
+            static_data_name="passed",
+            static_data_template=passed_template)
 
 
         failed_template = '''{% with failed=data.get_failed %}{% if failed == 0 %}<span id='failed' class=\"text-success\">{{ failed }}</span>{% else %}<span id='failed' class=\"text-danger\">{{ failed }}</span>{% endif %}{% endwith %}'''
 
-        self.add_column(title="Failed",
-                hideable=False,
-                orderable=False,
-                static_data_name="failed",
-                static_data_template=failed_template)
+        self.add_column(
+            title="Failed",
+            hideable=False,
+            orderable=False,
+            static_data_name="failed",
+            static_data_template=failed_template)
 
         # total = self.queryset.annotate(total=Count('testcaseresult'))
         # total_passed = self.queryset.annotate(passed=Sum(testcaseresult__result__in=['pass']))
@@ -114,11 +119,12 @@ class TestReportTable(ToasterTable):
         {% endwith %}\
         '''
 
-        self.add_column(title="Pass/Total",
-                        hideable=False,
-                        orderable=False,
-                        static_data_name="pass_total",
-                        static_data_template=abs_pass_template)
+        self.add_column(
+            title="Pass/Total",
+            hideable=False,
+            orderable=False,
+            static_data_name="pass_total",
+            static_data_template=abs_pass_template)
 
         relative_pass_template = '''\
         {% with percentage=data.get_relative_passed_percentage %}\
@@ -130,11 +136,12 @@ class TestReportTable(ToasterTable):
         {% endwith %}\
         '''
 
-        self.add_column(title="Pass/Run",
-                        hideable=False,
-                        orderable=False,
-                        static_data_name="pass_run",
-                        static_data_template=relative_pass_template)
+        self.add_column(
+            title="Pass/Run",
+            hideable=False,
+            orderable=False,
+            static_data_name="pass_run",
+            static_data_template=relative_pass_template)
 
 
 def normalize_query(query_string,
@@ -148,7 +155,7 @@ def normalize_query(query_string,
         ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
 
     '''
-    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)] 
+    return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
 
 def get_query(query_string, search_fields):
     ''' Returns a query, that is a combination of Q objects. That combination
@@ -186,10 +193,12 @@ class SearchTable(ToasterTable):
 
         if ('q' in self.request.GET) and self.request.GET['q'].strip():
             query = urlparse.urlparse(self.request.get_full_path()).query
-            query_string = urlparse.parse_qs(query)['q'][0].encode('ascii','ignore').replace('+', ' ').replace('%22', '"')
+            query_string = urlparse.parse_qs(query)['q'][0].encode('ascii', 'ignore').replace('+', ' ').replace('%22', '"')
 
-        entry_query = get_query(query_string, ['testplan__name', 'version', 'release', 'test_type', 'poky_commit',
-                                                'poky_branch', 'target', 'image_type', 'hw_arch', 'hw'])
+        entry_query = get_query(
+            query_string,
+            ['testplan__name', 'version', 'release', 'test_type', 'poky_commit',
+             'poky_branch', 'target', 'image_type', 'hw_arch', 'hw'])
 
         found_entries = TestRun.objects.filter(entry_query)
 
@@ -257,7 +266,7 @@ class TestCaseTable(ToasterTable):
         if self.request.GET:
             if self.request.GET['name']:
                 query = urlparse.urlparse(self.request.get_full_path()).query
-                query_string = urlparse.parse_qs(query)['name'][0].encode('ascii','ignore')
+                query_string = urlparse.parse_qs(query)['name'][0].encode('ascii', 'ignore')
                 results = TestCaseResult.objects.filter(testcase_id=query_string).order_by('-testrun__start_date')
 
         self.queryset = results
@@ -295,8 +304,6 @@ class TestCaseTable(ToasterTable):
                         hideable=False,
                         orderable=True,
                         field_name="testrun__release")
-
- 
 
 
 # This needs to be staticaly defined here as django reads the url patterns

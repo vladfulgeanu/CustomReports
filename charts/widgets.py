@@ -33,7 +33,7 @@ from django.core.exceptions import FieldError
 from django.conf.urls import url, patterns
 from HTMLParser import HTMLParser
 
-import urls
+import charts.urls
 import types
 import json
 import collections

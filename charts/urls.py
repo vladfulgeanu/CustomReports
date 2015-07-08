@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
-from . import views, tables
+from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
