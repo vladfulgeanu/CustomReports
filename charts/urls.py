@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^(?P<version>[0-9.]+)$', views.index, name='index_2'),
+    url(r'^(?P<latest_version>[0-9.]+)$', views.index, name='index_2'),
     url(r'^search/$', views.search, name='search'),
     url(r'^testrun_filter/$', views.testrun_filter, name='testrun_filter'),
     url(r'^testcase_filter/$', views.testcase_filter, name='testcase_filter'),

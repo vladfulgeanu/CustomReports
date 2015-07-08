@@ -31,31 +31,30 @@ def search(request):
         'table_name' : tables.SearchTable.__name__.lower()
         })
 
-def index(request, version=None):
+def index(request, latest_version=None):
 
     version_form = ReleaseForm()
 
     start = True
 
-    if not version:
-        latest_version = TestRun.objects.order_by('-version').distinct('version').values_list('version')[0][0]
+    if not latest_version:
+        version = TestRun.objects.order_by('-version').distinct('version').values_list('version')[0][0]
     else:
         start = False
-        latest_version = version
+        version = latest_version
 
     testruns = {}
 
-    uniq_release_testruns = TestRun.objects.filter(version=latest_version).distinct('release')
+    all_releases = TestRun.objects.filter(version=version).distinct('release').values_list('release', flat=True)
 
-    for uniq_release_testrun in uniq_release_testruns:
+    for release in all_releases:
         passed = failed = 0
-        testruns_in_release = TestRun.objects.filter(release=uniq_release_testrun.release)
+        testruns_in_release = TestRun.objects.filter(release=release)
         for testrun_in_release in testruns_in_release:
             passed += testrun_in_release.testcaseresult_set.filter(result='passed').count()
             failed += testrun_in_release.testcaseresult_set.filter(result='failed').count()
 
-        testruns[uniq_release_testrun.release.encode('ascii', 'ignore')] = {
-            'release' : uniq_release_testrun.release,
+        testruns[release.encode('ascii', 'ignore')] = {
             'passed' : passed,
             'failed' : failed
         }
@@ -63,9 +62,14 @@ def index(request, version=None):
     return render(request, 'charts/index.html', {
         'version_form' : version_form,
         'start' : start,
-        'version' : latest_version,
+        'version' : version,
         'testruns' : collections.OrderedDict(sorted(testruns.items(), reverse=True))
         })
+
+# returns a list used for creating a form with all distinct entries of given field name from Test Runs
+def get_field_form(fieldname):
+
+	return [entry.encode("utf8") for entry in TestRun.objects.distinct(fieldname).values_list(fieldname, flat=True)]
 
 def testrun_filter(request):
 
@@ -90,14 +94,14 @@ def testrun_filter(request):
             testplan_name = TestPlan.objects.get(id=request.GET.get('testplan')).name
 
     return render(request, 'charts/testrun_filter.html', {
-        'release_form' : [release.encode("utf8") for release in TestRun.objects.distinct('release').values_list('release', flat=True)],
+        'release_form' : get_field_form('release'),
         'plan_form' : TestPlan.objects.distinct('name').all(),
-        'type_form' : [ttype.encode("utf8") for ttype in TestRun.objects.distinct('test_type').values_list('test_type', flat=True)],
-        'commit_form' : [commit.encode("utf8") for commit in TestRun.objects.distinct('poky_commit').values_list('poky_commit', flat=True)],
-        'target_form' : [target.encode("utf8") for target in TestRun.objects.distinct('target').values_list('target', flat=True)],
-        'itype_form' : [itype.encode("utf8") for itype in TestRun.objects.distinct('image_type').values_list('image_type', flat=True)],
-        'hwa_form' : [hwa.encode("utf8") for hwa in TestRun.objects.distinct('hw_arch').values_list('hw_arch', flat=True)],
-        'hw_form' : [hw.encode("utf8") for hw in TestRun.objects.distinct('hw').values_list('hw', flat=True)],
+        'type_form' : get_field_form('test_type'),
+        'commit_form' : get_field_form('poky_commit'),
+        'target_form' : get_field_form('target'),
+        'itype_form' : get_field_form('image_type'),
+        'hwa_form' : get_field_form('hw_arch'),
+        'hw_form' : get_field_form('hw'),
         'query' : request.GET.get('release', '') + " " + testplan_name + " " + request.GET.get('test_type', '') + " " +
                   request.GET.get('poky_commit', '') + " " + request.GET.get('target', '') + " " + request.GET.get('image_type', '') + " " +
                   request.GET.get('hw_arch', '') + " " + request.GET.get('hw', ''),

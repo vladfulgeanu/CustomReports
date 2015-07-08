@@ -1,5 +1,13 @@
 #! /usr/bin/env python
 
+# Command line utility that inserts a new Test Plan into the
+# Test Reporting Tool's database.
+#
+# Positional arguments:
+#       - name of the TestPlan (e.g. "BSP/QEMU master branch")
+#       - name of the TestPlan's product (e.g. "BSPs")
+#       - version (e.g "1.8")
+
 import os, sys
 import django
 

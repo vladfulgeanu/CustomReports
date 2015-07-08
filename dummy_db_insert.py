@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+# deprecated functionality
+# used in an older version of the project
+
 import json
 import os, sys
 import django

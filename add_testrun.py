@@ -1,5 +1,28 @@
 #! /usr/bin/env python
 
+# Command line utility that inserts a new Test Run and all its
+# corresponding Test Case Results into the Test Reporting Tool's database.
+# It does this by parsing a log file and getting all necessary Test Run
+# details from given parameters.
+# It assumes that the log file is in the same directory.
+#
+# Positional arguments:
+#       - log file
+#       - version (e.g "1.8")
+#       - release (e.g "1.8_M2.rc2")
+#       - test type - it accepts only two options, "Weekly" and "Full Pass"
+#       - poky Git commit
+#       - poky Git branch
+#       - start date for the Test Run
+#       - target (e.g "genericx86")
+#       - image type (e.g. "core-image-sato")
+#       - hardware architecture (e.g "x86")
+#       - device on which the Test Run executed (e.g. "Atom-PC")
+#
+# It currently handles only two types of Test Plans: OE-Core and BSP.
+# It chooses the corresponding Test Plan by checking the value of the "target"
+# parameters.
+
 import os, sys
 import django
 
@@ -50,8 +73,10 @@ testrun_form = TestRunForm(data=testrun)
 if testrun_form.is_valid():
     testrun_obj = testrun_form.save(commit=False)
     if target in ["AB-Centos", "AB-Feodra", "AB-Opensuse", "AB-Ubuntu"]:
+        # then Test Plan is "OE-Core"
         testrun_obj.testplan = get_object_or_404(TestPlan, name="OE-Core master branch")
     else:
+        # then Test Plan is "BSP"
         testrun_obj.testplan = get_object_or_404(TestPlan, name="BSP/QEMU master branch")
     testrun_obj.save()
     print "TestRun saved"
@@ -70,46 +95,47 @@ if not os.path.isfile(log_file):
     print 'Test Run deleted. Exiting ...'
     sys.exit(1)
 
+# Parse the log_file and create new instances of Test Case Results
 with open(log_file, 'r') as content_file:
     content = content_file.read()
 
-content = content.split("\n")
+    content = content.split("\n")
 
-for i in xrange(len(content) - 1):
-    msg = ""
-    if (": PASSED" in content[i]) or (": FAILED" in content[i]):
-        content[i] = content[i].split(" - Testcase ")[1]
-        test_id = content[i].split(":")[0].lower().replace(" ", "")
-        result = content[i].split(":")[1].lower().replace(" ", "")
-        if result == "failed":
-            for j in range(i + 2, len(content) - 1):
-                if (" - Testcase " not in content[j]) and (content[j] != ""):
-                    msg += content[j] + "\n"
-                else:
-                    break
+    for i in xrange(len(content) - 1):
+        msg = ""
+        if (": PASSED" in content[i]) or (": FAILED" in content[i]):
+            content[i] = content[i].split(" - Testcase ")[1]
+            test_id = content[i].split(":")[0].lower().replace(" ", "")
+            result = content[i].split(":")[1].lower().replace(" ", "")
+            if result == "failed":
+                for j in range(i + 2, len(content) - 1):
+                    if (" - Testcase " not in content[j]) and (content[j] != ""):
+                        msg += content[j] + "\n"
+                    else:
+                        break
 
-            msg = msg.replace('\"', '\\\"')
-            msg = msg.replace('\\\\', '(double backslash)')
-            msg = msg.replace('\\_', ' ')
-            msg = msg.strip('\\\\')
-            msg = msg.replace('\\n\\n_', '\\n')
-            msg = msg.replace('\t', ' ')
+                msg = msg.replace('\"', '\\\"')
+                msg = msg.replace('\\\\', '(double backslash)')
+                msg = msg.replace('\\_', ' ')
+                msg = msg.strip('\\\\')
+                msg = msg.replace('\\n\\n_', '\\n')
+                msg = msg.replace('\t', ' ')
 
-        testcaseresult = {
-            "testcase_id" : test_id,
-            "result" : result,
-            "message" : msg
-            }
+            testcaseresult = {
+                "testcase_id" : test_id,
+                "result" : result,
+                "message" : msg
+                }
 
-        testcaseresult_form = TestCaseResultForm(data=testcaseresult)
-        if testcaseresult_form.is_valid():
-            testcaseresult_obj = testcaseresult_form.save(commit=False)
-            testcaseresult_obj.testrun = testrun_obj
-            testcaseresult_obj.save()
-        else:
-            print 'Error: A TestCaseResult json is not valid'
-            testrun_obj.delete()
-            print 'Test Run deleted. Exiting ...'
-            sys.exit(1)
+            testcaseresult_form = TestCaseResultForm(data=testcaseresult)
+            if testcaseresult_form.is_valid():
+                testcaseresult_obj = testcaseresult_form.save(commit=False)
+                testcaseresult_obj.testrun = testrun_obj
+                testcaseresult_obj.save()
+            else:
+                print 'Error: A TestCaseResult json is not valid'
+                testrun_obj.delete()
+                print 'Test Run deleted. Exiting ...'
+                sys.exit(1)
 
-print "All TestCaseResults saved. Done"
+    print "All TestCaseResults saved. Done"
