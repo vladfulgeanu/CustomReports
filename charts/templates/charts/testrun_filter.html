@@ -9,9 +9,11 @@
             google.load('visualization', '1.1', {packages: ['corechart']});
             google.setOnLoadCallback(drawChart);
 
+            var chart, data, options;
+
             function drawChart() {
 
-                var data = new google.visualization.DataTable();
+                data = new google.visualization.DataTable();
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Passes');
                 data.addColumn('number', 'Fails');
@@ -26,7 +28,7 @@
                     ids[{{ forloop.counter0 }}] = {{ id }};
                 {% endfor %}
 
-                var options = {
+                options = {
                     title : "Results for: {{ query }}",
                     theme : 'material',
                     curveType : 'function',
@@ -41,7 +43,7 @@
                     }
                 };
 
-                var chart = new google.visualization.ColumnChart(document.getElementById('linechart'));
+                chart = new google.visualization.ColumnChart(document.getElementById('linechart'));
 
                 function selectHandler() {
                     var selectedItem = chart.getSelection()[0];
@@ -52,12 +54,11 @@
                 }
                 google.visualization.events.addListener(chart, 'select', selectHandler);
 
-
                 chart.draw(data, options);
             }
 
             $(window).resize(function() {
-                drawChart();
+                chart.draw(data, options);
             });
         {% endif %}
     </script>
