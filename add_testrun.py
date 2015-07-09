@@ -72,7 +72,7 @@ testrun_form = TestRunForm(data=testrun)
 
 if testrun_form.is_valid():
     testrun_obj = testrun_form.save(commit=False)
-    if target in ["AB-Centos", "AB-Feodra", "AB-Opensuse", "AB-Ubuntu"]:
+    if target in ["AB-Centos", "AB-Fedora", "AB-Opensuse", "AB-Ubuntu"]:
         # then Test Plan is "OE-Core"
         testrun_obj.testplan = get_object_or_404(TestPlan, name="OE-Core master branch")
     else:
