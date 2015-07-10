@@ -53,7 +53,7 @@ class TestReportTable(ToasterTable):
                         static_data_name="testrun_id",
                         static_data_template=testrun_template)
 
-        custom_template = '''\
+        planenv_template = '''\
         {% url 'charts:plan_env' data.release data.testplan.id data.target data.hw as link %}\
         {% if data.target == data.hw %}\
             <a href="{{ link }}">{{ data.testplan.name }} on {{ data.hw }} </a>\
@@ -67,9 +67,9 @@ class TestReportTable(ToasterTable):
             hideable=False,
             orderable=False,
             static_data_name="plan_env",
-            static_data_template=custom_template)
+            static_data_template=planenv_template)
 
-        total_template = "{% with total=data.get_total %}<span id='total'>{{ total }}</span>{% endwith %}"
+        total_template = '''{% with total=data.get_total %}<span id="total">{{ total }}</span>{% endwith %}'''
 
         self.add_column(
             title="Total",
@@ -79,7 +79,7 @@ class TestReportTable(ToasterTable):
             static_data_template=total_template)
 
 
-        run_template = "{% with run=data.get_run %}<span id='run'>{{ run }}</span>{% endwith %}"
+        run_template = '''{% with run=data.get_run %}<span id="run">{{ run }}</span>{% endwith %}'''
 
         self.add_column(
             title="Run",
@@ -88,7 +88,7 @@ class TestReportTable(ToasterTable):
             static_data_name="run",
             static_data_template=run_template)
 
-        passed_template = "{% with passed=data.get_passed %}<span id='passed'>{{ passed }}</span>{% endwith %}"
+        passed_template = '''{% with passed=data.get_passed %}<span id="passed">{{ passed }}</span>{% endwith %}'''
 
         self.add_column(
             title="Passed",
@@ -98,7 +98,7 @@ class TestReportTable(ToasterTable):
             static_data_template=passed_template)
 
 
-        failed_template = '''{% with failed=data.get_failed %}{% if failed == 0 %}<span id='failed' class=\"text-success\">{{ failed }}</span>{% else %}<span id='failed' class=\"text-danger\">{{ failed }}</span>{% endif %}{% endwith %}'''
+        failed_template = '''{% with failed=data.get_failed %}{% if failed == 0 %}<span id="failed" class="text-success">{{ failed }}</span>{% else %}<span id="failed" class="text-danger">{{ failed }}</span>{% endif %}{% endwith %}'''
 
         self.add_column(
             title="Failed",
@@ -112,11 +112,15 @@ class TestReportTable(ToasterTable):
         # print total + "   " + total_passed
         abs_pass_template = '''\
         {% with percentage=data.get_abs_passed_percentage %}\
+        <span class=\
         {% if percentage >= "90" %}\
-            <span class=\"text-success\">{{ percentage }}%</span>\
+            "text-success"\
+        {% elif percentage >= "80" %}\
+            "text-warning"\
         {% else %}\
-            <span class=\"text-danger\">{{ percentage }}%</span>\
-        {% endif %}
+            "text-danger"\
+        {% endif %}\
+        >{{ percentage }}%</span>\
         {% endwith %}\
         '''
 
@@ -129,11 +133,15 @@ class TestReportTable(ToasterTable):
 
         relative_pass_template = '''\
         {% with percentage=data.get_relative_passed_percentage %}\
+        <span class=\
         {% if percentage >= "90" %}\
-            <span class=\"text-success\">{{ percentage }}%</span>\
+            "text-success"\
+        {% elif percentage >= "80" %}\
+            "text-warning"\
         {% else %}\
-            <span class=\"text-danger\">{{ percentage }}%</span>\
-        {% endif %}
+            "text-danger"\
+        {% endif %}\
+        >{{ percentage }}%</span>\
         {% endwith %}\
         '''
 
@@ -148,21 +156,21 @@ class TestReportTable(ToasterTable):
 def normalize_query(query_string,
                     findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
                     normspace=re.compile(r'\s{2,}').sub):
-    ''' Splits the query string in invidual keywords, getting rid of unecessary spaces
+    """ Splits the query string in invidual keywords, getting rid of unecessary spaces
         and grouping quoted words together.
         Example:
 
         >>> normalize_query('  some random  words "with   quotes  " and   spaces')
         ['some', 'random', 'words', 'with quotes', 'and', 'spaces']
 
-    '''
+    """
     return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
 
 def get_query(query_string, search_fields):
-    ''' Returns a query, that is a combination of Q objects. That combination
+    """ Returns a query, that is a combination of Q objects. That combination
         aims to search keywords within a model by testing the given search fields.
 
-    '''
+    """
     query = None # Query to search for every search term
     terms = normalize_query(query_string)
     for term in terms:
@@ -287,10 +295,14 @@ class TestCaseTable(ToasterTable):
                         static_data_name="testrun__start_date",
                         static_data_template=date_template)
 
-        result_template = ''' <span class={% if data.result == 'passed' %} 'text-success'\
-                                          {% else %} 'text-danger'\
-                                          {% endif %}>\
-                                          {{ data.result }} </span> '''
+        result_template = '''\
+        <span class=\
+        {% if data.result == 'passed' %}\
+        "text-success"\
+        {% else %}\
+        "text-danger"\
+        {% endif %}>\
+        {{ data.result }} </span>'''
 
         self.add_column(title="Status",
                         hideable=False,

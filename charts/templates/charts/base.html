@@ -18,7 +18,11 @@
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/jquery.cookie-1.4.1.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}charts/js/metisMenu.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}charts/js/sb-admin-2.js"></script>
+    <script>
+        window.onload = function() {
+            $('#side-menu').metisMenu();
+        }
+    </script>
     {% block scripts %}{% endblock scripts %}
 </head>
 
@@ -78,7 +82,6 @@
 
 
         {% block body %}{% endblock %}
-        
 
     </div>
     <!-- /#wrapper -->

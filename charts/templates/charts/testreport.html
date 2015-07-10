@@ -5,45 +5,48 @@
 {% block scripts %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-      google.load("visualization", "1.1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
+        google.load("visualization", "1.1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
 
-        var mydata = new google.visualization.DataTable();
+        var chart, data, options;
 
-        mydata.addColumn('string', 'Category');
-        mydata.addColumn('number', 'Total tests');
+        function drawChart() {
 
-        mydata.addRow(['Passed', {{ passes }}]);
-        mydata.addRow(['Failed', {{ fails }}]);
+            data = new google.visualization.DataTable();
 
-        var options = {
-            theme: 'material',
-            height: 300,
-            pieHole: 0.3,
-            fontSize: 18,
-            legend : {
-                position: 'right',
-                alignment: 'center',
-                textStyle: {
-                    fontSize: 20
-                }
-            },
-            colors : ['#4CAF50', '#F44336'],
-            chartArea: {
-                left : 60,
-                top : 0,
-                width: '100%',
-                height: '100%'
-            },
-        };
+            data.addColumn('string', 'Category');
+            data.addColumn('number', 'Total tests');
 
-        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
-        chart.draw(mydata, options);
-      }
+            data.addRow(['Passed', {{ passes }}]);
+            data.addRow(['Failed', {{ fails }}]);
 
-      $(window).resize(function() {
-          drawChart();
+            options = {
+                theme: 'material',
+                height: 300,
+                pieHole: 0.3,
+                fontSize: 18,
+                legend : {
+                    position: 'right',
+                    alignment: 'center',
+                    textStyle: {
+                        fontSize: 20
+                    }
+                },
+                colors : ['#4CAF50', '#F44336'],
+                chartArea: {
+                    left : 60,
+                    top : 0,
+                    width: '100%',
+                    height: '100%'
+                },
+            };
+
+            chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+            chart.draw(data, options);
+        }
+
+        $(window).resize(function() {
+            chart.draw(data, options);
         });
     </script>
 

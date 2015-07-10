@@ -142,15 +142,13 @@ def testreport(request, release):
 
     passes = fails = 0
     for testrun in testreport:
-        no_testcaseresults = testrun.testcaseresult_set.count()
-        passes += no_testcaseresults - testrun.testcaseresult_set.filter(result='failed').count()
-        fails += no_testcaseresults - testrun.testcaseresult_set.filter(result='passed').count()
+        passes += testrun.testcaseresult_set.filter(result='passed').count()
+        fails += testrun.testcaseresult_set.filter(result='failed').count()
 
     return render(request, 'charts/testreport.html', {
         'fails' : fails,
         'passes': passes,
         'release' : release,
-        'testreport' : testreport,
         'table_name' : tables.TestReportTable.__name__.lower()
         })
 

@@ -7,9 +7,12 @@
     <script type="text/javascript">
         google.load("visualization", "1.1", {packages:['corechart']});
         google.setOnLoadCallback(drawChart);
+
+        var chart, data, options;
+
         function drawChart() {
 
-            var data = new google.visualization.DataTable();
+            data = new google.visualization.DataTable();
 
             data.addColumn('string', 'Release');
             data.addColumn('number', 'Passed');
@@ -25,7 +28,7 @@
                 ids[{{ forloop.counter0 }}] = '{{ release }}';
             {% endfor %}
 
-            var options = {
+            options = {
                 title : 'Tests run for version {{ version }}',
                 height : 500,
                 chartArea : {width: '80%', height: '80%'},
@@ -34,7 +37,7 @@
                 isStacked : true,
             };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
+            chart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
 
             function selectHandler() {
                 var selectedItem = chart.getSelection()[0];
@@ -49,7 +52,7 @@
         }
 
         $(window).resize(function() {
-            drawChart();
+            chart.draw(data, options);
         });
     </script>
 
@@ -97,7 +100,6 @@
                     <!-- /.panel-body -->
                 </div>
                 <!-- /.panel -->
-                
             </div>
             <!-- /.col-lg-10 -->
         </div>
