@@ -28,6 +28,7 @@ import re, urlparse
 
 class TestReportTable(ToasterTable):
     """Table of layers in Toaster"""
+    """Table used inside a particular release's page"""
 
     def __init__(self, *args, **kwargs):
         ToasterTable.__init__(self, True)
@@ -181,6 +182,7 @@ def get_query(query_string, search_fields):
 
 class SearchTable(ToasterTable):
     """Table of layers in Toaster"""
+    """Table used inside search results page"""
 
     def __init__(self, *args, **kwargs):
         ToasterTable.__init__(self, False)
@@ -255,6 +257,7 @@ class SearchTable(ToasterTable):
 
 class TestCaseTable(ToasterTable):
     """Table of layers in Toaster"""
+    """Table used inside a TestCase filter page page"""
 
     def __init__(self, *args, **kwargs):
         ToasterTable.__init__(self, False)

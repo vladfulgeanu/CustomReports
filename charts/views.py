@@ -11,10 +11,6 @@ from . import tables
 def get_item(dictionary, key):
     return dictionary.get(key)
 
-# class ModelChoiceField(forms.ModelChoiceField):
-#     def label_from_instance(self, obj):
-#         return obj.release[:3]
-
 class ReleaseForm(forms.Form):
     versions = forms.ModelChoiceField(queryset=TestRun.objects.all().order_by('-version').distinct('version'), to_field_name='version')
 
@@ -143,7 +139,6 @@ def testrun(request, id):
 def testreport(request, release):
 
     testreport = TestRun.objects.filter(release=release)
-
 
     passes = fails = 0
     for testrun in testreport:
