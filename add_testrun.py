@@ -53,6 +53,8 @@ except IndexError, NameError:
     print "<start_date> _must_ respect the format in the example. <test_type> _must_ be either \"Weekly\" or \"Full Pass\""
     sys.exit(1)
 
+log_file = open('errors.log', 'w')
+
 testrun_obj = None
 
 testrun = {
@@ -82,6 +84,7 @@ if testrun_form.is_valid():
     print "TestRun saved"
 else:
     print 'Error: TestRun json is not valid. Exiting ...'
+    log_file.write('Error: TestRun json is not valid. Exiting ...\n')
     sys.exit(1)
 
 
@@ -93,6 +96,7 @@ if not os.path.isfile(log_file):
     print "Error: Cannot find log file"
     testrun_obj.delete()
     print 'Test Run deleted. Exiting ...'
+    log_file.write('Error: Cannot find log file. Exiting ...\n')
     sys.exit(1)
 
 # Parse the log_file and create new instances of Test Case Results
@@ -136,6 +140,8 @@ with open(log_file, 'r') as content_file:
                 print 'Error: A TestCaseResult json is not valid'
                 testrun_obj.delete()
                 print 'Test Run deleted. Exiting ...'
+                log_file.write('Error: A TestCaseResult json is not valid. Exiting ...\n')
                 sys.exit(1)
 
+    log_file.close()
     print "All TestCaseResults saved. Done"
