@@ -9,7 +9,11 @@
 
 **Run Server**
 
-- `python manage.py runserver`	
+- `python manage.py runserver 0.0.0.0:8080`
 
-- Then go to [localhost:8000/charts](http://localhost:8000/charts/)
+- Then go to [localhost:8080/](http://localhost:8080/)
+
+**Add data into DB**
+
+- Use `add_testplan.py` and `add_testrun.py` scripts
 
