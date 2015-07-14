@@ -113,7 +113,7 @@ class TestReportTable(ToasterTable):
         abs_pass_template = '''\
         {% with percentage=data.get_abs_passed_percentage %}\
         <span class=\
-        {% if percentage >= "90" %}\
+        {% if percentage >= "90" or percentage == "100" %}\
             "text-success"\
         {% elif percentage >= "80" %}\
             "text-warning"\
@@ -134,7 +134,7 @@ class TestReportTable(ToasterTable):
         relative_pass_template = '''\
         {% with percentage=data.get_relative_passed_percentage %}\
         <span class=\
-        {% if percentage >= "90" %}\
+        {% if percentage >= "90" or percentage == "100" %}\
             "text-success"\
         {% elif percentage >= "80" %}\
             "text-warning"\
